@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
+        <title>Registration Form</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="panel with-nav-tabs panel-info">
+                        <div class="panel-heading">
+                            <ul class="nav nav-tabs">
+                                <li><a href="/login" data-toggle="tab"> Login </a></li>
+                                <li class="active"><a href="/registration" data-toggle="tab"> Signup </a></li>
+                            </ul>
+                        </div>
+
+                        <form th:action="@{/registration}" th:object="${user}" method="post">
+                            <div class="panel-body">
+                                <div class="tab-content">
+
+                                    <div id="signup" class="tab-pane fade in active register">
+                                        <div class="container-fluid">
+                                            <div class="row">
+                                                <h2 class="text-center" style="color: #f0ad4e;"><Strong>
+                                                    Register </Strong>
+                                                </h2>
+                                                <hr/>
+                                                <div class="row">
+                                                    <div class="col-xs-12 col-sm-12 col-md-12">
+                                                        <div class="form-group">
+                                                            <div class="input-group">
+                                                                <div class="input-group-addon iga1">
+                                                                    <span class="glyphicon glyphicon-user"></span>
+                                                                </div>
+                                                                <input type="text" class="form-control"
+                                                                       placeholder="Enter User Name" th:field="*{name}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-xs-12 col-sm-12 col-md-12">
+                                                        <div class="form-group">
+                                                            <div class="input-group">
+                                                                <div class="input-group-addon iga1">
+                                                                    <span class="glyphicon glyphicon-user"></span>
+                                                                </div>
+                                                                <input type="text" class="form-control"
+                                                                       placeholder="Enter Last Name"
+                                                                       th:field="*{lastName}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-xs-12 col-sm-12 col-md-12">
+                                                        <div class="form-group">
+                                                            <div class="input-group">
+                                                                <div class="input-group-addon iga1">
+                                                                    <span class="glyphicon glyphicon-envelope"></span>
+                                                                </div>
+                                                                <input type="email" class="form-control"
+                                                                       placeholder="Enter E-Mail" th:field="*{email}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-xs-12 col-sm-12 col-md-12">
+                                                        <div class="form-group">
+                                                            <div class="input-group">
+                                                                <div class="input-group-addon iga1">
+                                                                    <span class="glyphicon glyphicon-lock"></span>
+                                                                </div>
+                                                                <input type="password" class="form-control"
+                                                                       placeholder="Enter Password"
+                                                                       th:field="*{password}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col-xs-12 col-sm-12 col-md-12">
+                                                        <div class="form-group">
+                                                            <button type="submit"
+                                                                    class="btn btn-lg btn-block btn-warning">
+                                                                Register
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
