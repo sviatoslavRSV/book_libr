@@ -6,8 +6,6 @@ var editor; // use a global for the submit and return data rendering in the exam
 
 $(document).ready(function () {
     editor = new $.fn.dataTable.Editor({
-        // ajax: "/user/books",
-        // ajax: "/fake-data/data.json",
         ajax: {
             create: {
                 type: 'post',
@@ -53,14 +51,6 @@ $(document).ready(function () {
                 },
                 url: '/admin/books/delete'
             },
-            upload_image: {
-                type: 'post',
-                url: '/admin/books/upload_image'
-            },
-            upload_book: {
-                type: 'post',
-                url: '/admin/books/upload_book'
-            }
         },
         table: "#messageTable",
         idSrc: 'id',
@@ -68,7 +58,8 @@ $(document).ready(function () {
             {
                 label: "Image:",
                 name: "image",
-                type: "upload_image",
+                type: "upload",
+                ajax: '/admin/books/upload_image',
                 display: function (file_id) {
                     return '<img src="' + editor.file('files', file_id).web_path + '"/>';
                 },
@@ -86,12 +77,14 @@ $(document).ready(function () {
             }, {
                 label: "Short description:",
                 name: "description"
-            },{
+            }, {
                 label: "Book:",
                 name: "book",
-                type: "upload_book",
+                type: "upload",
+                ajax: '/admin/books/upload_book',
                 display: function (file_id) {
-                    return '<img src="' + editor.file('files', file_id).web_path + '"/>';
+                    return '<a  href="' + editor.file('files', file_id).web_path + '">'
+                        + editor.file('files', file_id).filename + '</a>';
                 },
                 clearText: "Clear",
                 noImageText: 'No file'
@@ -106,17 +99,9 @@ $(document).ready(function () {
             {data: "id"},
             {
                 data: "image",
-                // render: function (file_object) {
-                //     console.log(file_object);
-                //     return file_object ?
-                //         '<img src="' + editor.file('files', file_object).web_path + '"/>' :
-                //         null;
-                // },
                 render: function (file_id) {
                     return file_id ?
-                        '<img src="'+editor.file( 'files', file_id ).web_path+'"/>' :
-                        // '<a  href="' + editor.file('files', file_id).web_path + '">'
-                        // + editor.file('files', file_id).filename + '</a>' :
+                        '<img src="' + editor.file('files', file_id).web_path + '"/>' :
                         null;
                 },
                 defaultContent: "No image",
@@ -128,21 +113,14 @@ $(document).ready(function () {
             {data: "description"},
             {
                 data: "book",
-                // render: function (file_object) {
-                //     console.log(file_object);
-                //     return file_object ?
-                //         '<img src="' + editor.file('files', file_object).web_path + '"/>' :
-                //         null;
-                // },
                 render: function (file_id) {
                     return file_id ?
-                        '<img src="'+editor.file( 'files', file_id ).web_path+'"/>' :
-                        // '<a  href="' + editor.file('files', file_id).web_path + '">'
-                        // + editor.file('files', file_id).filename + '</a>' :
+                        '<a  href="' + editor.file('files', file_id).web_path + '">'
+                        + editor.file('files', file_id).filename + '</a>' :
                         null;
                 },
                 defaultContent: "No file",
-                title: "File"
+                title: "Book"
             }
         ],
         select: true,
@@ -153,20 +131,4 @@ $(document).ready(function () {
         ]
     });
 });
-/*$(document).ready(function () {
- // $('#mybtn').click(function () {
- var table = $('#messageTable').DataTable({
- "sAjaxSource": "/user/getAll",
- "sAjaxDataProp": "",
- "order": [[0, "asc"]],
- "aoColumns": [
- {"mData": "id"},
- {"mData": "title"},
- {"mData": "author"},
- {"mData": "publishOffice"},
- {"mData": "description"}
- ]
- })
- // });
- });*/
 

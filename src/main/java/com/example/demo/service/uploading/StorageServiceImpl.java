@@ -1,4 +1,4 @@
-package com.example.demo.uploading;
+package com.example.demo.service.uploading;
 
 
 import com.example.demo.model.library.ImageFile;
@@ -17,48 +17,22 @@ import java.nio.file.StandardCopyOption;
 
 @Component
 public class StorageServiceImpl implements StorageService {
-    //    private final static String url = "src/main/resources/upload";
-    private final static String url = com.example.demo.model.Paths.SYSTEM_PATH_IMAGE.replaceFirst("/", "");
+    private final static String url = com.example.demo.utils.Paths.SYSTEM_PATH.replaceFirst("/", "");
     private final Path path = Paths.get(url);
-//    private MultipartFile multipartFile;
-
-//    @Override
-//    public MultipartFile getMultipartFile() {
-//        return multipartFile;
-//    }
 
     @Override
     public void store(MultipartFile file, ImageFile imageFile) {
-//        multipartFile = file;
         try {
             if (file.isEmpty()) {
                 throw new RuntimeException("Failed to store empty file " + file.getOriginalFilename());
             }
             String extension = FilenameUtils.getExtension(imageFile.getImageName());
-//            Files.copy(file.getInputStream(), path.resolve(myFile2.getFileName()),
             Files.copy(file.getInputStream(), path.resolve(String.valueOf(imageFile.getId() + "." +
                     extension)), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new RuntimeException("Failed to store file " + file.getOriginalFilename(), e);
         }
     }
-
-    /*@Override
-    public Stream<Path> loadAll() {
-        try {
-            return Files.walk(this.rootLocation, 1)
-                    .filter(path -> !path.equals(this.rootLocation))
-                    .map(path -> this.rootLocation.relativize(path));
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to read stored files", e);
-        }
-
-    }*/
-
-//    @Override
-//    public Path loadFile(String filename) {
-//        return path.resolve(filename);
-//    }
 
     @Override
     public Resource loadFileAsResource(String filename) {

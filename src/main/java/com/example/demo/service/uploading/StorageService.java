@@ -1,4 +1,4 @@
-package com.example.demo.uploading;
+package com.example.demo.service.uploading;
 
 import com.example.demo.model.library.ImageFile;
 import org.springframework.core.io.Resource;

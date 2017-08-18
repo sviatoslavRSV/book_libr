@@ -2,9 +2,9 @@ package com.example.demo.controller;
 
 import com.example.demo.model.library.Book;
 import com.example.demo.model.library.ImageFile;
-import com.example.demo.model.library.json_objects.JsonImageFile;
 import com.example.demo.model.library.json_content.Files;
 import com.example.demo.model.library.json_objects.JsonBook;
+import com.example.demo.model.library.json_objects.JsonImageFile;
 import com.example.demo.service.BookFileService;
 import com.example.demo.service.BookService;
 import org.apache.log4j.Logger;
@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.nio.file.Path;
 import java.util.*;
+
 
 @Controller
 public class BookController {
@@ -34,7 +36,7 @@ public class BookController {
     @ResponseBody
     public ResponseEntity<?> getAllBooks() {
         logger.warn("in method getAllBooks");
-        JsonBook data = createImageBookList();
+        JsonBook data = createImageJsonFromList();
         logger.warn("send all books as responseBody");
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
@@ -60,11 +62,21 @@ public class BookController {
     @ResponseBody
     public ResponseEntity<?> removeBook(@RequestBody Book book) {
         bookService.removeBook(book);
+        if (!book.getImage().equals("")) {
+            bookFileService.removeImage(Integer.parseInt(book.getImage()));
+            Path path = java.nio.file.Paths.get(com.example.demo.utils.Paths.SYSTEM_PATH.replaceFirst("/", ""));
+            deleteFileByPrefix(path, book.getImage());
+        }
+        if (!book.getBook().equals("")) {
+            bookFileService.removeImage(Integer.parseInt(book.getBook()));
+            Path path = java.nio.file.Paths.get(com.example.demo.utils.Paths.SYSTEM_PATH.replaceFirst("/", ""));
+            deleteFileByPrefix(path, book.getBook());
+        }
         logger.warn("book id= " + book.getId() + " " + "has deleted successfully");
         return new ResponseEntity<>(new JsonBook(), HttpStatus.OK);
     }
 
-    private JsonBook createImageBookList() {
+    private JsonBook createImageJsonFromList() {
         JsonBook data = new JsonBook();
         List<Book> list = bookService.listBooks();
         data.setData(list);
@@ -73,20 +85,48 @@ public class BookController {
         Map<String, JsonImageFile> imageFileMap = new HashMap<>();
         ImageFile newImage;
         for (Book book : list) {
-            newImage = bookFileService.getImage(Integer.parseInt((book.getImage())));
+            if (!book.getImage().equals("")) {
+                newImage = bookFileService.getImage(Integer.parseInt((book.getImage())));
 
-            JsonImageFile jsonImageFile = new JsonImageFile();
-            jsonImageFile.setId(String.valueOf(newImage.getId()));
-            jsonImageFile.setSystemPath(newImage.getSystemPath());
-            jsonImageFile.setWebPath(newImage.getWebPath());
-            jsonImageFile.setImageName(newImage.getImageName());
-            jsonImageFile.setFileSize(newImage.getFileSize());
+                JsonImageFile jsonImageFile = new JsonImageFile();
+                jsonImageFile.setId(String.valueOf(newImage.getId()));
+                jsonImageFile.setSystemPath(newImage.getSystemPath());
+                jsonImageFile.setWebPath(newImage.getWebPath());
+                jsonImageFile.setImageName(newImage.getImageName());
+                jsonImageFile.setFileSize(newImage.getFileSize());
 
-            imageFileMap.put(jsonImageFile.getId(), jsonImageFile);
+                imageFileMap.put(jsonImageFile.getId(), jsonImageFile);
+            }
+            if (!book.getBook().equals("")) {
+                newImage = bookFileService.getImage(Integer.parseInt((book.getBook())));
+
+                JsonImageFile jsonImageFile2 = new JsonImageFile();
+                jsonImageFile2.setId(String.valueOf(newImage.getId()));
+                jsonImageFile2.setSystemPath(newImage.getSystemPath());
+                jsonImageFile2.setWebPath(newImage.getWebPath());
+                jsonImageFile2.setImageName(newImage.getImageName());
+                jsonImageFile2.setFileSize(newImage.getFileSize());
+
+                imageFileMap.put(jsonImageFile2.getId(), jsonImageFile2);
+            }
         }
         myFile1.setFiles(imageFileMap);
         data.setFiles(myFile1);
         return data;
+    }
+
+    private void deleteFileByPrefix(final Path path, final String prefix) {
+        try {
+            java.nio.file.Files.list(path).filter(p -> p.toString().contains(prefix)).forEach((p) -> {
+                try {
+                    java.nio.file.Files.deleteIfExists(p);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 

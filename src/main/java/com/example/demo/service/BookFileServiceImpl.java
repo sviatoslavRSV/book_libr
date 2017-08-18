@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 
-import com.example.demo.model.library.BookFile;
 import com.example.demo.model.library.ImageFile;
 import com.example.demo.repository.BookFileRepository;
 import com.example.demo.repository.ImageFileRepository;
@@ -23,14 +22,20 @@ public class BookFileServiceImpl implements BookFileService {
         return imageFileRepository.findById(id);
     }
 
-    @Override
-    public ImageFile getImageFile(String imageName) {
-        return imageFileRepository.findByImageName(imageName);
-    }
+//    @Override
+//    public ImageFile getImageFile(String imageName) {
+//        return imageFileRepository.findByImageName(imageName);
+//    }
+
+//    @Override
+//    public BookFile getBookFile(String fileName) {
+//        return bookFileRepository.findByFileName(fileName);
+//    }
 
     @Override
-    public BookFile getBookFile(String fileName) {
-        return bookFileRepository.findByFileName(fileName);
+    public void removeImage(int id) {
+        ImageFile imageFile = getImage(id);
+        imageFileRepository.delete(imageFile);
     }
 
     @Override

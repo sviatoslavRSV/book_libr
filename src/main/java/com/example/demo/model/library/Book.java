@@ -27,8 +27,11 @@ public class Book {
 //    @Size(min = 1, max = 255)
     private String description;
 
-    @Column(name = "image")
+//    @Column(name = "image")
     private String image;
+
+    @Column(name = "book_file")
+    private String book;
 
     public Book() {
 
@@ -87,6 +90,14 @@ public class Book {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getBook() {
+        return book;
+    }
+
+    public void setBook(String book) {
+        this.book = book;
     }
 
     @Override

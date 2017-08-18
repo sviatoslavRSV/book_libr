@@ -1,14 +1,16 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Paths;
 import com.example.demo.model.library.ImageFile;
-import com.example.demo.model.library.json_objects.JsonImageFile;
 import com.example.demo.model.library.json_content.Files;
 import com.example.demo.model.library.json_content.Upload;
 import com.example.demo.model.library.json_objects.JsonBook;
+import com.example.demo.model.library.json_objects.JsonImageFile;
 import com.example.demo.model.library.json_objects.JsonMessage;
 import com.example.demo.service.BookFileService;
-import com.example.demo.uploading.StorageService;
+import com.example.demo.service.uploading.StorageService;
+import com.example.demo.utils.Extensions;
+import com.example.demo.utils.Paths;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -16,6 +18,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,58 +41,82 @@ public class FileUploadController {
 
     @PostMapping("/admin/books/upload_image")
     @ResponseBody
-    public ResponseEntity<?> handleFileUpload(@RequestParam("upload") MultipartFile file
+    public ResponseEntity<?> handleImageUpload(@RequestParam("upload") MultipartFile file
             , HttpServletRequest request) {
-
         logger.warn("file: " + file.getOriginalFilename() + " : " + file.getContentType());
-
-        if (file.getSize() > 10000) {
-            logger.warn("file exceeds limit size");
-            String message = messageSource.getMessage("image.size.err", null, request.getLocale());
-            return new ResponseEntity<Object>(new JsonMessage("image", message)
-                    , HttpStatus.OK);
-        }
-        JsonBook jsonBook = creatJsonImage(file);
-
-//        HttpHeaders httpHeaders = new HttpHeaders();
-//        httpHeaders.setContentType(MediaType.TEXT_HTML);
-        logger.warn(jsonBook);
-        return new ResponseEntity<>(jsonBook, HttpStatus.OK);
+        return checkImage(file, request);
     }
 
-    @GetMapping(value = "/admin/download_image/{filename:.+}")
+    @PostMapping("/admin/books/upload_book")
+    @ResponseBody
+    public ResponseEntity<?> handleFileUpload(@RequestParam("upload") MultipartFile file
+            , HttpServletRequest request) {
+        logger.warn("file: " + file.getOriginalFilename() + " : " + file.getContentType());
+        return checkBookFile(file, request);
+    }
+
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @GetMapping(value = "/user/download/{filename:.+}")
     @ResponseBody
     public ResponseEntity<?> getImageFile(@PathVariable String filename) {
         Resource fileImage = storageService.loadFileAsResource(filename);
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" +
                 fileImage.getFilename()).body(fileImage);
     }
-    @GetMapping(value = "/admin/download_book/{filename:.+}")
-    @ResponseBody
-    public ResponseEntity<?> getBookFile(@PathVariable String filename) {
-        Resource fileImage = storageService.loadFileAsResource(filename);
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" +
-                fileImage.getFilename()).body(fileImage);
+
+    private ResponseEntity<?> checkImage(MultipartFile file, HttpServletRequest request) {
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        if (!Extensions.getExtensionsImageSet().contains(extension)) {
+            String message = messageSource.getMessage("image.extens.err", null, request.getLocale());
+            return new ResponseEntity<Object>(new JsonMessage("image", message)
+                    , HttpStatus.OK);
+        }
+        if (file.getSize() > 10000) {
+            String message = messageSource.getMessage("image.size.err", null, request.getLocale());
+            return new ResponseEntity<Object>(new JsonMessage("image", message)
+                    , HttpStatus.OK);
+        }
+        JsonBook jsonBook = creatJsonImage(file);
+        return new ResponseEntity<>(jsonBook, HttpStatus.OK);
+    }
+
+    private ResponseEntity<?> checkBookFile(MultipartFile file, HttpServletRequest request) {
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        if (!Extensions.getExtensionsBookSet().contains(extension)) {
+            String message = messageSource.getMessage("book.extens.err", null, request.getLocale());
+            return new ResponseEntity<Object>(new JsonMessage("book", message)
+                    , HttpStatus.OK);
+        }
+        if (file.getSize() > 20000000) {
+            String message = messageSource.getMessage("book.size.err", null, request.getLocale());
+            return new ResponseEntity<Object>(new JsonMessage("book", message)
+                    , HttpStatus.OK);
+        }
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.setContentType(MediaType.APPLICATION_PDF);
+        JsonBook jsonBook = creatJsonImage(file);
+        return new ResponseEntity<>(jsonBook, HttpStatus.OK);
     }
 
     private JsonBook creatJsonImage(MultipartFile multipartFile) {
-
+/*set object image to write in database*/
         ImageFile newImage = new ImageFile();
         newImage.setImageName(multipartFile.getOriginalFilename());
         newImage.setFileSize(String.valueOf(multipartFile.getSize()));
-        newImage.setSystemPath(Paths.SYSTEM_PATH_IMAGE);
-        newImage.setWebPath(Paths.WEB_PATH_IMAGE);
-
+        newImage.setSystemPath(Paths.SYSTEM_PATH);
+        newImage.setWebPath(Paths.WEB_PATH);
+/*write object in database and retreive id*/
         newImage = bookFileService.saveImage(newImage);
+/*correct fields with id that was get previously*/
         bookFileService.updateImage(newImage);
-
+/*create new json with field "String id" instead of "int id"*/
         JsonImageFile jsonImageFile = new JsonImageFile();
         jsonImageFile.setId(String.valueOf(newImage.getId()));
         jsonImageFile.setSystemPath(newImage.getSystemPath());
         jsonImageFile.setWebPath(newImage.getWebPath());
         jsonImageFile.setImageName(newImage.getImageName());
         jsonImageFile.setFileSize(newImage.getFileSize());
-
+/*creat json object with write structure for response*/
         JsonBook jsonBook = new JsonBook();
         Files files = new Files();
         Map<String, JsonImageFile> imageFileMap = new HashMap<>();
@@ -99,7 +126,7 @@ public class FileUploadController {
         Upload upload = new Upload();
         upload.setId(String.valueOf(newImage.getId()));
         jsonBook.setUploads(upload);
-
+/*save file in system*/
         storageService.store(multipartFile, newImage);
         logger.warn("image saved successfully name= " + newImage.getImageName() + " id= " + newImage.getId());
         return jsonBook;

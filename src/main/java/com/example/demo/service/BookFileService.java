@@ -1,14 +1,14 @@
 package com.example.demo.service;
 
 
-import com.example.demo.model.library.BookFile;
 import com.example.demo.model.library.ImageFile;
 
 
 public interface BookFileService {
-    BookFile getBookFile(String fileName);
+//    BookFile getBookFile(String fileName);
 
-    ImageFile getImageFile(String imageName);
+    //    ImageFile getImageFile(String imageName);
+    void removeImage(int id);
 
     ImageFile getImage(int id);
 

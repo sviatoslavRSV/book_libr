@@ -1,44 +1,67 @@
 /**
- * Created by RSV on 15.08.2017.
+ * Created by RSV on 08.08.2017.
  */
 
 var editor; // use a global for the submit and return data rendering in the examples
 
 $(document).ready(function () {
+    editor = new $.fn.dataTable.Editor({
+        fields: [
+            {
+                label: "Image:",
+                name: "image",
+            }, {
+                label: "Title:",
+                name: "title"
+            }, {
+                label: "Author:",
+                name: "author"
+            }, {
+                label: "Publishing office:",
+                name: "publishOffice"
+            }, {
+                label: "Short description:",
+                name: "description"
+            }, {
+                label: "Book:",
+                name: "book",
+            }]
+    });
+
     $('#messageTable').DataTable({
         dom: "Bfrtip",
-        // ajax: "/fake-data/data.json",
         ajax: "/user/books",
         columns: [
             {data: "id"},
-            {data: "image"},
+            {
+                data: "image",
+                render: function (file_id) {
+                    return file_id ?
+                        '<img src="' + editor.file('files', file_id).web_path + '"/>' :
+                        null;
+                },
+                defaultContent: "No image",
+                title: "Image"
+            },
             {data: "title"},
             {data: "author"},
             {data: "publishOffice"},
-            {data: "description"}
+            {data: "description"},
+            {
+                data: "book",
+                render: function (file_id) {
+                    return file_id ?
+                        '<a  href="' + editor.file('files', file_id).web_path + '">'
+                        + editor.file('files', file_id).filename + '</a>' :
+                        null;
+                },
+                defaultContent: "No file",
+                title: "Book"
+            }
         ],
         select: false,
         buttons: [
-            // {extend: "create", editor: editor},
-            // {extend: "edit", editor: editor},
-            // {extend: "remove", editor: editor}
         ]
     });
 });
-/*$(document).ready(function () {
- // $('#mybtn').click(function () {
- var table = $('#messageTable').DataTable({
- "sAjaxSource": "/user/getAll",
- "sAjaxDataProp": "",
- "order": [[0, "asc"]],
- "aoColumns": [
- {"mData": "id"},
- {"mData": "title"},
- {"mData": "author"},
- {"mData": "publishOffice"},
- {"mData": "description"}
- ]
- })
- // });
- });*/
 
