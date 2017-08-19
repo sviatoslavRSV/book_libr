@@ -28,9 +28,9 @@ public class BookDetailsController {
     public ModelAndView showCommentPage(@PathVariable int id) {
         logger.warn("show comment page");
         Book book = bookService.getBookById(id);
+        ModelAndView modelAndView = new ModelAndView("user/book-details", "book", book);
         ImageFile image = bookFileService.getImage(Integer.parseInt(book.getImage()));
         ImageFile bookFile = bookFileService.getImage(Integer.parseInt(book.getBook()));
-        ModelAndView modelAndView = new ModelAndView("user/book-details", "book", book);
         modelAndView.addObject("image", image);
         modelAndView.addObject("bookFile", bookFile);
         return modelAndView;
@@ -41,7 +41,8 @@ public class BookDetailsController {
     @ResponseBody
     public String receiveComments(@PathVariable int id, @RequestBody String comm, HttpServletRequest request) {
         Book book = bookService.getBookById(id);
-        book.setComments(book.getComments() + "\n" + comm + "\n");
+        if (book.getComments() == null) book.setComments(comm + "<br>");
+        else book.setComments(book.getComments() + "\n" + comm + "\n");
         bookService.updateBook(book);
         logger.warn("exit from method receiveComments " + comm + " id= " + id);
         return "success";

@@ -27,7 +27,7 @@ public class Book {
 //    @Size(min = 1, max = 255)
     private String description;
 
-//    @Column(name = "image")
+    @Column(name = "image")
     private String image;
 
     @Column(name = "book_file")

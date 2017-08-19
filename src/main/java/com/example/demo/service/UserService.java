@@ -13,6 +13,8 @@ public interface UserService {
 
     void createUserAcount(Userr user);
 
+    void createAdminAcount(Userr user);
+
     void saveRegisteredUser(Userr user);
 
     void createToken(Userr user, String token);

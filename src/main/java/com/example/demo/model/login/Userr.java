@@ -26,11 +26,11 @@ public class Userr {
     private int id;
 
     @Column(name = "last_name")
-    @Size(min = 5, max = 10)
+    @Size(min = 1, max = 10)
     private String lastName;
 
     @Column(name = "name")
-    @Size(min = 5, max = 10)
+    @Size(min = 1, max = 10)
     private String name;
 
     @Column(name = "email")

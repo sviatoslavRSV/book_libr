@@ -83,7 +83,7 @@ public class LoginController {
                 request.getContextPath();
         String text = ("To confirm change password click link below: \n" + url +
                 "/resetPassword?token=" + resetToken);
-        emailSender.sendEmail("change password email", text);
+        emailSender.sendEmail("change password email", text,userEmail,request.getLocale());
 //        model.addAttribute("sendOk", messageSource.getMessage("message.ok", null, request.getLocale()));
         return "redirect:/successRegister";
     }
@@ -157,7 +157,7 @@ public class LoginController {
         String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +
                 request.getContextPath();
         String text = ("To confirm registration click link below: \n" + url + "/confirm?token=" + token);
-        emailSender.sendEmail("confirmation mail", text);
+        emailSender.sendEmail("confirmation mail", text,user.getEmail(),request.getLocale());
         return "redirect:/successRegister";
     }
 
@@ -200,10 +200,11 @@ public class LoginController {
     @GetMapping(value = "/resendRegistrationToken")
     public String resendToken(@RequestParam("token") String oldToken, HttpServletRequest request) {
         VerifToken newToken = userService.createNewToken(oldToken);
+        Userr userr = userService.findUserByToken(oldToken);
         String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +
                 request.getContextPath();
         String text = ("To confirm REregistration click link below: \n" + url + "/confirm?token=" + newToken.getToken());
-        emailSender.sendEmail("confirmation mail", text);
+        emailSender.sendEmail("confirmation mail", text,userr.getEmail(),request.getLocale());
         return "redirect:/successRegister";
     }
 

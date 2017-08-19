@@ -12,7 +12,7 @@ public class ImageFile {
     private String fileSize;
     private String webPath;
     private String systemPath;
-//    @Column(name = "image_name")
+//    @Column(name = "imageName", nullable = false)
     private String imageName;
 
     public int getId() {

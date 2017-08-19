@@ -5,10 +5,12 @@ import com.example.demo.model.library.ImageFile;
 import com.example.demo.model.library.json_content.Files;
 import com.example.demo.model.library.json_objects.JsonBook;
 import com.example.demo.model.library.json_objects.JsonImageFile;
+import com.example.demo.model.library.json_objects.JsonMessage;
 import com.example.demo.service.BookFileService;
 import com.example.demo.service.BookService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -30,6 +33,8 @@ public class BookController {
     private BookService bookService;
     @Autowired
     private BookFileService bookFileService;
+    @Autowired
+    private MessageSource messageSource;
 
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping(value = "/user/books")
@@ -43,8 +48,23 @@ public class BookController {
 
     @PostMapping(value = "/admin/books/add")
     @ResponseBody
-    public ResponseEntity<?> addBook(@RequestBody Book newBook) {
+    public ResponseEntity<?> addBook(@RequestBody Book newBook, HttpServletRequest request) {
         logger.warn(newBook);
+        if (newBook.getImage().equals("")) {
+            String message = messageSource.getMessage("image.content.err", null, request.getLocale());
+            return new ResponseEntity<Object>(new JsonMessage("image", message)
+                    , HttpStatus.OK);
+        }
+        if (newBook.getTitle().equals("")) {
+            String message = messageSource.getMessage("title.content.err", null, request.getLocale());
+            return new ResponseEntity<Object>(new JsonMessage("title", message)
+                    , HttpStatus.OK);
+        }
+        if (newBook.getBook().equals("")) {
+            String message = messageSource.getMessage("book.content.err", null, request.getLocale());
+            return new ResponseEntity<Object>(new JsonMessage("book", message)
+                    , HttpStatus.OK);
+        }
         if (newBook.getId() == 0) {
             bookService.addBook(newBook);
             logger.warn("book add successfully");

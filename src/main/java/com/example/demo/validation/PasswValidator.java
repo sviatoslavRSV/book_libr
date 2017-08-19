@@ -17,10 +17,6 @@ public class PasswValidator implements ConstraintValidator<ValidPassw, String> {
 
     @Override
     public boolean isValid(String password, ConstraintValidatorContext context) {
-//        logger.warn("starting password validation: " + password);
-        boolean passwMatch = password.length() > 6;
-//        logger.warn(String.valueOf(passwMatch));
-        if (passwMatch) return true;
-        else return false;
+        return password.length() > 1;
     }
 }
