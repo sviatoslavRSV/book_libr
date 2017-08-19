@@ -80,8 +80,8 @@
                     </p>
                 </div>
                 <div class="list-comments">
-                    <div>
-                        <a th:text="${book.comments}"></a>
+                    <div th:each="comment : ${comments}">
+                        <a th:text="${comment.comment}"></a>
                     </div>
                 </div>
             </div>

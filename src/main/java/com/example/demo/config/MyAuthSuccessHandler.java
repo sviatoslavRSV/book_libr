@@ -16,8 +16,8 @@ import java.io.IOException;
 import java.util.Collection;
 
 @Component
-public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
-    private Logger logger = Logger.getLogger(MyAuthenticationSuccessHandler.class);
+public class MyAuthSuccessHandler implements AuthenticationSuccessHandler {
+    private Logger logger = Logger.getLogger(MyAuthSuccessHandler.class);
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 

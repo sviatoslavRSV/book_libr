@@ -15,18 +15,8 @@ public class BookFileServiceImpl implements BookFileService {
 
     @Override
     public ImageFile getImage(int id) {
-        return imageFileRepository.findById(id);
+        return imageFileRepository.findOne(id);
     }
-
-//    @Override
-//    public ImageFile getImageFile(String imageName) {
-//        return imageFileRepository.findByImageName(imageName);
-//    }
-
-//    @Override
-//    public BookFile getBookFile(String fileName) {
-//        return bookFileRepository.findByFileName(fileName);
-//    }
 
     @Override
     public void removeImage(int id) {
@@ -38,12 +28,4 @@ public class BookFileServiceImpl implements BookFileService {
     public ImageFile saveImage(ImageFile imageFile) {
         return imageFileRepository.save(imageFile);
     }
-
-    /*@Override
-    public ImageFile updateImage(ImageFile imageFile) {
-        String extension = FilenameUtils.getExtension(imageFile.getImageName());
-        imageFile.setWebPath(imageFile.getWebPath() + imageFile.getId() + "." + extension);
-        imageFile.setSystemPath(imageFile.getSystemPath() + imageFile.getId() + "." + extension);
-        return imageFileRepository.save(imageFile);
-    }*/
 }

@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.library.Book;
+import com.example.demo.model.library.Comment;
 import com.example.demo.model.library.ImageFile;
 import com.example.demo.service.BookFileService;
 import com.example.demo.service.BookService;
@@ -33,6 +34,10 @@ public class BookDetailsController {
         ImageFile bookFile = bookFileService.getImage(Integer.parseInt(book.getBook()));
         modelAndView.addObject("image", image);
         modelAndView.addObject("bookFile", bookFile);
+        modelAndView.addObject("comments", book.getComments());
+        for (Comment comment : book.getComments()) {
+            logger.warn(comment.getComment());
+        }
         return modelAndView;
     }
 
@@ -41,9 +46,14 @@ public class BookDetailsController {
     @ResponseBody
     public String receiveComments(@PathVariable int id, @RequestBody String comm, HttpServletRequest request) {
         Book book = bookService.getBookById(id);
-        if (book.getComments() == null) book.setComments(comm + "<br>");
-        else book.setComments(book.getComments() + "\n" + comm + "\n");
+//        if (book.getComments() == null) book.setComments(comm + "\n");
+//        else
+        Comment comment = new Comment();
+        comment.setComment(comm);
+        comment.setBook(book);
+        book.getComments().add(comment);
         bookService.updateBook(book);
+        bookService.saveComments(comment);
         logger.warn("exit from method receiveComments " + comm + " id= " + id);
         return "success";
     }

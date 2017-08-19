@@ -30,14 +30,13 @@ public class TaskForHmApplication {
 
     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext context) {
-        /*add image extensions*/
-        ExtensionsAndPaths.setExtensionsImageSet(new HashSet<>(Arrays.asList("png", "jpg", "bmp")));
-        /*add book extensions*/
-        ExtensionsAndPaths.setExtensionsBookSet(new HashSet<>(Arrays.asList("txt", "rtf", "doc", "odt", "pdf")));
         return new CommandLineRunner() {
             @Override
             public void run(String... strings) throws Exception {
-
+        /*add image extensions*/
+                ExtensionsAndPaths.setExtensionsImageSet(new HashSet<>(Arrays.asList("png", "jpg", "bmp")));
+        /*add book extensions*/
+                ExtensionsAndPaths.setExtensionsBookSet(new HashSet<>(Arrays.asList("txt", "rtf", "doc", "odt", "pdf")));
                 Role role = roleRepository.findByRole("ADMIN");
                 if (role == null) {
                     roleRepository.save(new Role("ADMIN"));
@@ -47,15 +46,18 @@ public class TaskForHmApplication {
                     roleRepository.save(new Role("USER"));
                 }
 
-                Userr userAdmin = new Userr();
-                userAdmin.setName("Admin");
-                userAdmin.setLastName("Admin");
-                userAdmin.setEmail("admin@gmail.com");
-                userAdmin.setPassword("admin");
-                userAdmin.setActive(true);
-                userService.createAdminAcount(userAdmin);
-                String token = UUID.randomUUID().toString();
-                userService.createToken(userAdmin, token);
+                Userr userAdmin = userService.findUserByEmail("admin@gmail.com");
+                if (userAdmin == null) {
+                    userAdmin = new Userr();
+                    userAdmin.setName("Admin");
+                    userAdmin.setLastName("Admin");
+                    userAdmin.setEmail("admin@gmail.com");
+                    userAdmin.setPassword("admin");
+                    userAdmin.setActive(true);
+                    userService.createAdminAcount(userAdmin);
+                    String token = UUID.randomUUID().toString();
+                    userService.createToken(userAdmin, token);
+                }
             }
         };
     }

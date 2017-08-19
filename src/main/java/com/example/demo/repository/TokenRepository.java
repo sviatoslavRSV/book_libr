@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TokenRepository extends JpaRepository<VerifToken, Long> {
+public interface TokenRepository extends JpaRepository<VerifToken, Integer> {
     VerifToken findByToken(String token);
 
     VerifToken findByUser(Userr user);

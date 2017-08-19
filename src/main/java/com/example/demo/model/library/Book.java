@@ -1,56 +1,49 @@
 package com.example.demo.model.library;
 
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-//@JsonAutoDetect
+import javax.persistence.*;
+import java.util.List;
+
 @Entity
 @Table(name = "books")
 public class Book {
     @Id
-    @Column(name = "id")
+    @Column(name = "b_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     @Column(name = "book_title")
-//    @Size(min = 1, max = 20)
     private String title;
-
     @Column(name = "book_author")
-//    @Size(min = 1, max = 20)
     private String author;
-
     @Column(name = "publish_office")
-//    @Size(min = 1, max = 20)
     private String publishOffice;
-
     @Column(name = "short_descript")
-//    @Size(min = 1, max = 255)
     private String description;
-
     @Column(name = "image")
     private String image;
-
     @Column(name = "book_file")
     private String book;
-
-    private String comments;
+    @JsonIgnore
+    @OneToMany(mappedBy = "book", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    private List<Comment> comments;
 
     public Book() {
 
     }
 
-    public Book(String title, String author, String publishOffice, String description) {
+    /*public Book(String title, String author, String publishOffice, String description) {
         this.title = title;
         this.author = author;
         this.publishOffice = publishOffice;
         this.description = description;
-    }
+    }*/
 
-    public String getComments() {
+    public List<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(String comments) {
+    public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 
@@ -118,7 +111,7 @@ public class Book {
                 ", author='" + author + '\'' +
                 ", publishOffice='" + publishOffice + '\'' +
                 ", description='" + description + '\'' +
-//                ", image='" + image + '\'' +
+                ", image='" + image + '\'' +
                 '}';
     }
 }

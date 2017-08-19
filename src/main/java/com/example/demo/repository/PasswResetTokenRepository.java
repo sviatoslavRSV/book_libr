@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PasswResetTokenRepository extends JpaRepository<PasswResetToken, Long> {
+public interface PasswResetTokenRepository extends JpaRepository<PasswResetToken, Integer> {
     PasswResetToken findByToken(String token);
 
     PasswResetToken findByUser(Userr userr);

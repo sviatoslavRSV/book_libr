@@ -22,7 +22,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
     @Autowired
-    private MyAuthenticationSuccessHandler successHandler;
+    private MyAuthSuccessHandler successHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

@@ -34,7 +34,6 @@ public class LoginController {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-//    @Qualifier("emailSender")
     private EmailSender emailSender;
     @Autowired
     private UserService userService;
@@ -84,7 +83,6 @@ public class LoginController {
         String text = ("To confirm change password click link below: \n" + url +
                 "/resetPassword?token=" + resetToken);
         emailSender.sendEmail("change password email", text,userEmail,request.getLocale());
-//        model.addAttribute("sendOk", messageSource.getMessage("message.ok", null, request.getLocale()));
         return "redirect:/successRegister";
     }
 
@@ -107,15 +105,11 @@ public class LoginController {
         Userr user = token.getUser();
         Authentication auth = new UsernamePasswordAuthenticationToken(user, null,
                 userDetailsService.loadUserByUsername(user.getEmail()).getAuthorities());
-//        final Authentication auth = new UsernamePasswordAuthenticationToken(user, null,
-//                Arrays.asList(new SimpleGrantedAuthority("USER")));
         SecurityContextHolder.getContext().setAuthentication(auth);
         return "redirect:/updatePassword";
-//        return "updatePassword";
     }
 
     @GetMapping(value = "/updatePassword")
-//    @PreAuthorize("hasRole('ADMIN')")
     public String showUpdatePasswordPage(Model model) {
         logger.warn("in method update showUpdatePasswordPage GET");
         model.addAttribute("passwordDTO", new PasswordDTO());
@@ -134,9 +128,9 @@ public class LoginController {
     }
 
     @PostMapping(value = "/registration")
-    public String createUserAcountAndSendConfirmEmail(@ModelAttribute("user") @Valid Userr user, BindingResult result,
+    public String createUserAcountAndSendConfirmEmail(@ModelAttribute @Valid Userr user, BindingResult result,
                                                       HttpServletRequest request) {
-        if (result.hasErrors()) { return "registration";}
+        if (result.hasErrors()) { return "redirect:/registration";}
        /* Zxcvbn zxcvbn = new Zxcvbn();
         Strength strength = zxcvbn.measure(user.getPassword());
         if (strength.getScore() < 1) {
@@ -149,24 +143,20 @@ public class LoginController {
         if (existUser != null) {
             String message = messageSource.getMessage("message.userExist", null, request.getLocale());
             result.rejectValue("email", "err", message);
-            return "registration";
+            return "redirect:/registration";
         }
-        userService.createUserAcount(user);
         String token = UUID.randomUUID().toString();
-        userService.createToken(user, token);
         String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +
                 request.getContextPath();
         String text = ("To confirm registration click link below: \n" + url + "/confirm?token=" + token);
         emailSender.sendEmail("confirmation mail", text,user.getEmail(),request.getLocale());
+        userService.createUserAcount(user);
+        userService.createToken(user, token);
         return "redirect:/successRegister";
     }
 
     @GetMapping(value = "/user/changePassword")
     public String showChangePasswordPage(Model model) {
-
-//        final Authentication auth = new UsernamePasswordAuthenticationToken(user, null,
-//                Arrays.asList(new SimpleGrantedAuthority("USER")));
-//        SecurityContextHolder.getContext().setAuthentication(auth);
         model.addAttribute("passwordDTO", new PasswordDTO());
         return "changePassword";
     }
@@ -193,7 +183,6 @@ public class LoginController {
         userService.saveRegisteredUser(user);
         String message = messageSource.getMessage("message.allowEnter", null, request.getLocale());
         model.addAttribute("enter", message);
-//        return "login";
         return "redirect:/successRegister";
     }
 
@@ -209,7 +198,7 @@ public class LoginController {
     }
 
     @PostMapping(value = "/user/saveChangedPassword")
-    public String saveChangedPassword(@RequestParam("oldPassword") String oldPassword, @Valid PasswordDTO passwordDTO,
+    public String saveChangedPassword(@RequestParam String oldPassword, @Valid PasswordDTO passwordDTO,
                                       BindingResult result, HttpServletRequest request) {
         logger.warn("in method saveChangedPassword POST");
         if (result.hasErrors()) {
