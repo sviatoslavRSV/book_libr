@@ -4,7 +4,6 @@ package com.example.demo.service;
 import com.example.demo.model.library.ImageFile;
 import com.example.demo.repository.BookFileRepository;
 import com.example.demo.repository.ImageFileRepository;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,11 +42,11 @@ public class BookFileServiceImpl implements BookFileService {
         return imageFileRepository.save(imageFile);
     }
 
-    @Override
+    /*@Override
     public ImageFile updateImage(ImageFile imageFile) {
         String extension = FilenameUtils.getExtension(imageFile.getImageName());
         imageFile.setWebPath(imageFile.getWebPath() + imageFile.getId() + "." + extension);
         imageFile.setSystemPath(imageFile.getSystemPath() + imageFile.getId() + "." + extension);
         return imageFileRepository.save(imageFile);
-    }
+    }*/
 }

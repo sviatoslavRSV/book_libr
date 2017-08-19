@@ -25,20 +25,10 @@ public class BookServiceImpl implements BookService {
         bookRepository.delete(book);
     }
 
-    /*@Override
-    public Book getBookById(int id) {
-        return bookRepository.findOne((long) id);
-    }
-
     @Override
-    public Book getBookByName(String name) {
-        return bookRepository.findByName(name);
-    }*/
-
-//    @Override
-//    public Book getLastRecord() {
-//        return bookRepository.findFirstByOrderByIdDesc();
-//    }
+    public Book getBookById(int id) {
+        return bookRepository.findById(id);
+    }
 
     @Override
     public void updateBook(Book book) {
@@ -46,7 +36,10 @@ public class BookServiceImpl implements BookService {
         newBook.setTitle(book.getTitle());
         newBook.setAuthor(book.getAuthor());
         newBook.setDescription(book.getDescription());
-//        newBook.setImage(book.getImage());
+        newBook.setImage(book.getImage());
+        newBook.setImage(book.getBook());
+        newBook.setComments(book.getComments());
+        newBook.setPublishOffice(book.getPublishOffice());
         bookRepository.save(newBook);
     }
 

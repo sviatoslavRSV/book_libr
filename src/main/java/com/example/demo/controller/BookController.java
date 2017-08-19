@@ -53,7 +53,8 @@ public class BookController {
             logger.warn("book update successfully");
         }
         JsonBook jsonBooks = new JsonBook();
-        newBook.setImage(newBook.getImage().replaceFirst("[.][^.]+$", ""));
+//        newBook.setImage(newBook.getImage().replaceFirst("[.][^.]+$", ""));
+        newBook.setImage(newBook.getImage());
         jsonBooks.setData(new ArrayList<>(Arrays.asList(newBook)));
         return new ResponseEntity<>(jsonBooks, HttpStatus.OK);
     }
@@ -62,15 +63,17 @@ public class BookController {
     @ResponseBody
     public ResponseEntity<?> removeBook(@RequestBody Book book) {
         bookService.removeBook(book);
-        if (!book.getImage().equals("")) {
-            bookFileService.removeImage(Integer.parseInt(book.getImage()));
-            Path path = java.nio.file.Paths.get(com.example.demo.utils.Paths.SYSTEM_PATH.replaceFirst("/", ""));
-            deleteFileByPrefix(path, book.getImage());
+        ImageFile imageFile = bookFileService.getImage(Integer.parseInt(book.getImage()));
+        if (imageFile != null) {
+            bookFileService.removeImage(imageFile.getId());
+            Path path = java.nio.file.Paths.get(com.example.demo.utils.ExtensionsAndPaths.SYSTEM_PATH.replaceFirst("/", ""));
+            deleteFileByPrefix(path, imageFile.getImageName());
         }
+        imageFile = bookFileService.getImage(Integer.parseInt(book.getBook()));
         if (!book.getBook().equals("")) {
-            bookFileService.removeImage(Integer.parseInt(book.getBook()));
-            Path path = java.nio.file.Paths.get(com.example.demo.utils.Paths.SYSTEM_PATH.replaceFirst("/", ""));
-            deleteFileByPrefix(path, book.getBook());
+            bookFileService.removeImage(imageFile.getId());
+            Path path = java.nio.file.Paths.get(com.example.demo.utils.ExtensionsAndPaths.SYSTEM_PATH.replaceFirst("/", ""));
+            deleteFileByPrefix(path, imageFile.getImageName());
         }
         logger.warn("book id= " + book.getId() + " " + "has deleted successfully");
         return new ResponseEntity<>(new JsonBook(), HttpStatus.OK);

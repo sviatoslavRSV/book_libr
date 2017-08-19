@@ -8,8 +8,7 @@ import com.example.demo.model.library.json_objects.JsonImageFile;
 import com.example.demo.model.library.json_objects.JsonMessage;
 import com.example.demo.service.BookFileService;
 import com.example.demo.service.uploading.StorageService;
-import com.example.demo.utils.Extensions;
-import com.example.demo.utils.Paths;
+import com.example.demo.utils.ExtensionsAndPaths;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +65,7 @@ public class FileUploadController {
 
     private ResponseEntity<?> checkImage(MultipartFile file, HttpServletRequest request) {
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-        if (!Extensions.getExtensionsImageSet().contains(extension)) {
+        if (!ExtensionsAndPaths.getExtensionsImageSet().contains(extension)) {
             String message = messageSource.getMessage("image.extens.err", null, request.getLocale());
             return new ResponseEntity<Object>(new JsonMessage("image", message)
                     , HttpStatus.OK);
@@ -82,7 +81,7 @@ public class FileUploadController {
 
     private ResponseEntity<?> checkBookFile(MultipartFile file, HttpServletRequest request) {
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-        if (!Extensions.getExtensionsBookSet().contains(extension)) {
+        if (!ExtensionsAndPaths.getExtensionsBookSet().contains(extension)) {
             String message = messageSource.getMessage("book.extens.err", null, request.getLocale());
             return new ResponseEntity<Object>(new JsonMessage("book", message)
                     , HttpStatus.OK);
@@ -103,12 +102,10 @@ public class FileUploadController {
         ImageFile newImage = new ImageFile();
         newImage.setImageName(multipartFile.getOriginalFilename());
         newImage.setFileSize(String.valueOf(multipartFile.getSize()));
-        newImage.setSystemPath(Paths.SYSTEM_PATH);
-        newImage.setWebPath(Paths.WEB_PATH);
+        newImage.setSystemPath(ExtensionsAndPaths.SYSTEM_PATH+newImage.getImageName());
+        newImage.setWebPath(ExtensionsAndPaths.WEB_PATH+newImage.getImageName());
 /*write object in database and retreive id*/
         newImage = bookFileService.saveImage(newImage);
-/*correct fields with id that was get previously*/
-        bookFileService.updateImage(newImage);
 /*create new json with field "String id" instead of "int id"*/
         JsonImageFile jsonImageFile = new JsonImageFile();
         jsonImageFile.setId(String.valueOf(newImage.getId()));

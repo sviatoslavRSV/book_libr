@@ -100,14 +100,18 @@ $(document).ready(function () {
             {
                 data: "image",
                 render: function (file_id) {
-                    return file_id ?
-                        '<img src="' + editor.file('files', file_id).web_path + '"/>' :
-                        null;
+                    return file_id ? '<img src="' + editor.file('files', file_id).web_path + '"/>' : null;
                 },
                 defaultContent: "No image",
                 title: "Image"
             },
-            {data: "title"},
+            {
+                data: "title",
+                render: function (data, type, row, meta) {
+                    // console.log(row);
+                    return '<a href="/user/book/' + row.id + '">' + data + '</a>';
+                }
+            },
             {data: "author"},
             {data: "publishOffice"},
             {data: "description"},

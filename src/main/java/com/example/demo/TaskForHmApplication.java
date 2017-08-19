@@ -3,7 +3,7 @@ package com.example.demo;
 import com.example.demo.model.login.Role;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.service.UserServiceImpl;
-import com.example.demo.utils.Extensions;
+import com.example.demo.utils.ExtensionsAndPaths;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -29,9 +29,9 @@ public class TaskForHmApplication {
     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext context) {
         /*add image extensions*/
-        Extensions.setExtensionsImageSet(new HashSet<>(Arrays.asList("png", "jpg", "bmp")));
+        ExtensionsAndPaths.setExtensionsImageSet(new HashSet<>(Arrays.asList("png", "jpg", "bmp")));
         /*add book extensions*/
-        Extensions.setExtensionsBookSet(new HashSet<>(Arrays.asList("txt", "rtf", "doc", "odt", "pdf")));
+        ExtensionsAndPaths.setExtensionsBookSet(new HashSet<>(Arrays.asList("txt", "rtf", "doc", "odt", "pdf")));
 
 
         return strings -> {

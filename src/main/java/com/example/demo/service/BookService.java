@@ -12,7 +12,7 @@ public interface BookService {
 
     void removeBook(Book book);
 
-//    Book getLastRecord();
+    Book getBookById(int id);
 
     List<Book> listBooks();
 }

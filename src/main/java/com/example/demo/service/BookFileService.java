@@ -14,5 +14,5 @@ public interface BookFileService {
 
     ImageFile saveImage(ImageFile imageFile);
 
-    ImageFile updateImage(ImageFile imageFile);
+//    ImageFile updateImage(ImageFile imageFile);
 }

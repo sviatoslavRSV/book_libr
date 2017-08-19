@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Comments</title>
+        <meta charset="UTF-8">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+              integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
+              crossorigin="anonymous">
+
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+        <link rel='stylesheet prefetch'
+              href='//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css'>
+
+        <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+        <script src='//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+        <link rel="stylesheet" href="/css/style.css">
+
+        <script src="/js/commentBox.js"></script>
+        <script src="/js/bookDetail.js"></script>
+    </head>
+    <body>
+        <hr>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <!--<img src="/user/download/D101.jpg">-->
+                    <img th:src="${image.webPath}">
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <h2 class="text-uppercase">Book detail description </h2><br>
+                    <p>
+                        <b>Book Title: </b>
+                        <a th:text="${book.title}"></a><br>
+                        <b>Author: </b>
+                        <a th:text="${book.author}"></a><br>
+                        <b>Publishing office: </b>
+                        <a th:text="${book.publishOffice}"></a><br>
+                        <b>Download link: </b>
+                        <a th:href="${bookFile.webPath}" th:text="${bookFile.imageName}"> </a><br>
+                        <b>Short description: </b>
+                        <a th:text="${book.description}"></a><br>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-12">
+
+
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <img src="" alt="" class="img-responsive">
+                </div>
+            </div>
+        </div>
+        <br><br>
+
+        <div class="content">
+            <div class="comments">
+                <div class="editor">
+                    <div class="editor-header">
+                        <a href='#' data-role='bold'>B</a>
+                        <a href='#' data-role='italic'>I</a>
+                        <a href='#' data-role='underline'>U</a>
+                        <a href='#' data-role='justifyleft'><i class="menu-left"></i></a>
+                        <a href='#' data-role='justifycenter'><i class="menu-center"></i></a>
+                        <a href='#' data-role='justifyright'><i class="menu-right"></i></a>
+                    </div>
+                    <div id="text" class="editor-content" contenteditable></div>
+                </div>
+                <div class="insert-text">
+                    <span class="loading">Loading...</span>
+                    <span class="total-comment"></span>
+                    <p>
+                        <input type="submit" value="Comment"/>
+                    </p>
+                </div>
+                <div class="list-comments">
+                    <div>
+                        <a th:text="${book.comments}"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
+

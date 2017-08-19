@@ -3,7 +3,10 @@ package com.example.demo.utils;
 
 import java.util.Set;
 
-public class Extensions {
+public class ExtensionsAndPaths {
+    public final static String SYSTEM_PATH = "/src/main/resources/upload/";
+    public final static String WEB_PATH = "/user/download/";
+
     private static Set<String> extensionsImageSet;
     private static Set<String> extensionsBookSet;
 

@@ -33,6 +33,8 @@ public class Book {
     @Column(name = "book_file")
     private String book;
 
+    private String comments;
+
     public Book() {
 
     }
@@ -42,6 +44,14 @@ public class Book {
         this.author = author;
         this.publishOffice = publishOffice;
         this.description = description;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     public int getId() {
