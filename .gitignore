@@ -21,7 +21,6 @@ build/
 *.iml
 *.ipr
 *.iws
-*.idea
 
 # Test files
 
