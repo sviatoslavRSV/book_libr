@@ -75,7 +75,7 @@ public class FileUploadController {
             logger.warn("height: " + bufferedImage.getHeight() + " weight: " + bufferedImage.getWidth());
         } catch (MalformedURLException e) {
             logger.warn(e.getMessage());
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.warn(e.getMessage());
         }
 
