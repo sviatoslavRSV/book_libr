@@ -26,9 +26,6 @@ public class StorageServiceImpl implements StorageService {
             if (file.isEmpty()) {
                 throw new RuntimeException("Failed to store empty file " + file.getOriginalFilename());
             }
-//            String extension = FilenameUtils.getExtension(imageFile.getImageName());
-//            Files.copy(file.getInputStream(), path.resolve(String.valueOf(imageFile.getId() + "." +
-//                    extension)), StandardCopyOption.REPLACE_EXISTING);
             Files.copy(file.getInputStream(), path.resolve(imageFile.getImageName()), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new RuntimeException("Failed to store file " + file.getOriginalFilename(), e);

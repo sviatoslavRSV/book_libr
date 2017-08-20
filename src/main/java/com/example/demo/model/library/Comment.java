@@ -19,6 +19,15 @@ public class Comment {
     @JoinColumn(name = "b_id")
     private Book book;
 
+    public Comment() {
+
+    }
+
+    public Comment(String comment, Book book) {
+        this.comment = comment;
+        this.book = book;
+    }
+
     public int getId() {
         return id;
     }

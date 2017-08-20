@@ -27,17 +27,12 @@ public class BookDetailsController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping(value = "/user/book/{id}")
     public ModelAndView showCommentPage(@PathVariable int id) {
-        logger.warn("show comment page");
         Book book = bookService.getBookById(id);
         ModelAndView modelAndView = new ModelAndView("user/book-details", "book", book);
         ImageFile image = bookFileService.getImage(Integer.parseInt(book.getImage()));
         ImageFile bookFile = bookFileService.getImage(Integer.parseInt(book.getBook()));
         modelAndView.addObject("image", image);
         modelAndView.addObject("bookFile", bookFile);
-        modelAndView.addObject("comments", book.getComments());
-        for (Comment comment : book.getComments()) {
-            logger.warn(comment.getComment());
-        }
         return modelAndView;
     }
 
@@ -46,15 +41,9 @@ public class BookDetailsController {
     @ResponseBody
     public String receiveComments(@PathVariable int id, @RequestBody String comm, HttpServletRequest request) {
         Book book = bookService.getBookById(id);
-//        if (book.getComments() == null) book.setComments(comm + "\n");
-//        else
-        Comment comment = new Comment();
-        comment.setComment(comm);
-        comment.setBook(book);
+        Comment comment = new Comment(comm,book);
         book.getComments().add(comment);
-        bookService.updateBook(book);
-        bookService.saveComments(comment);
-        logger.warn("exit from method receiveComments " + comm + " id= " + id);
+        bookService.addBook(book);
         return "success";
     }
 }

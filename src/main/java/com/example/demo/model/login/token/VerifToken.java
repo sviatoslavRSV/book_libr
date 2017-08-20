@@ -16,7 +16,6 @@ public class VerifToken {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "token_id")
     private int id;
-    //    @Column(name = "token")
     private String token;
     @OneToOne(targetEntity = Userr.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "u_id")

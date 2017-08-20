@@ -22,7 +22,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,12 +69,22 @@ public class FileUploadController {
 
     private ResponseEntity<?> checkImage(MultipartFile file, HttpServletRequest request) {
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        BufferedImage bufferedImage = null;
+        try {
+            bufferedImage = ImageIO.read(file.getInputStream());
+            logger.warn("height: " + bufferedImage.getHeight() + " weight: " + bufferedImage.getWidth());
+        } catch (MalformedURLException e) {
+            logger.warn(e.getMessage());
+        } catch (IOException e) {
+            logger.warn(e.getMessage());
+        }
+
         if (!ExtensionsAndPaths.getExtensionsImageSet().contains(extension)) {
             String message = messageSource.getMessage("image.extens.err", null, request.getLocale());
             return new ResponseEntity<Object>(new JsonMessage("image", message)
                     , HttpStatus.OK);
         }
-        if (file.getSize() > 10000) {
+        if (bufferedImage.getHeight() > 800 || bufferedImage.getWidth() > 600) {
             String message = messageSource.getMessage("image.size.err", null, request.getLocale());
             return new ResponseEntity<Object>(new JsonMessage("image", message)
                     , HttpStatus.OK);
@@ -91,8 +105,6 @@ public class FileUploadController {
             return new ResponseEntity<Object>(new JsonMessage("book", message)
                     , HttpStatus.OK);
         }
-//        HttpHeaders httpHeaders = new HttpHeaders();
-//        httpHeaders.setContentType(MediaType.APPLICATION_PDF);
         JsonBook jsonBook = creatJsonImage(file);
         return new ResponseEntity<>(jsonBook, HttpStatus.OK);
     }
@@ -102,17 +114,12 @@ public class FileUploadController {
         ImageFile newImage = new ImageFile();
         newImage.setImageName(multipartFile.getOriginalFilename());
         newImage.setFileSize(String.valueOf(multipartFile.getSize()));
-        newImage.setSystemPath(ExtensionsAndPaths.SYSTEM_PATH+newImage.getImageName());
-        newImage.setWebPath(ExtensionsAndPaths.WEB_PATH+newImage.getImageName());
+        newImage.setSystemPath(ExtensionsAndPaths.SYSTEM_PATH + newImage.getImageName());
+        newImage.setWebPath(ExtensionsAndPaths.WEB_PATH + newImage.getImageName());
 /*write object in database and retreive id*/
         newImage = bookFileService.saveImage(newImage);
 /*create new json with field "String id" instead of "int id"*/
-        JsonImageFile jsonImageFile = new JsonImageFile();
-        jsonImageFile.setId(String.valueOf(newImage.getId()));
-        jsonImageFile.setSystemPath(newImage.getSystemPath());
-        jsonImageFile.setWebPath(newImage.getWebPath());
-        jsonImageFile.setImageName(newImage.getImageName());
-        jsonImageFile.setFileSize(newImage.getFileSize());
+        JsonImageFile jsonImageFile = new JsonImageFile(newImage);
 /*creat json object with write structure for response*/
         JsonBook jsonBook = new JsonBook();
         Files files = new Files();

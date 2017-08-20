@@ -41,7 +41,7 @@ public class BookController {
     @ResponseBody
     public ResponseEntity<?> getAllBooks() {
         logger.warn("in method getAllBooks");
-        JsonBook data = createImageJsonFromList();
+        JsonBook data = createJsonBookFromList();
         logger.warn("send all books as responseBody");
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
@@ -50,31 +50,23 @@ public class BookController {
     @ResponseBody
     public ResponseEntity<?> addBook(@RequestBody Book newBook, HttpServletRequest request) {
         logger.warn(newBook);
-        if (newBook.getImage().equals("")) {
+        if (newBook.getImage() == "") {
             String message = messageSource.getMessage("image.content.err", null, request.getLocale());
             return new ResponseEntity<Object>(new JsonMessage("image", message)
                     , HttpStatus.OK);
         }
-        if (newBook.getTitle().equals("")) {
+        if (newBook.getTitle() == "") {
             String message = messageSource.getMessage("title.content.err", null, request.getLocale());
             return new ResponseEntity<Object>(new JsonMessage("title", message)
                     , HttpStatus.OK);
         }
-        if (newBook.getBook().equals("")) {
+        if (newBook.getBook() == "") {
             String message = messageSource.getMessage("book.content.err", null, request.getLocale());
             return new ResponseEntity<Object>(new JsonMessage("book", message)
                     , HttpStatus.OK);
         }
-        if (newBook.getId() == 0) {
-            bookService.addBook(newBook);
-            logger.warn("book add successfully");
-        } else {
-            bookService.updateBook(newBook);
-            logger.warn("book update successfully");
-        }
+        bookService.addBook(newBook);
         JsonBook jsonBooks = new JsonBook();
-//        newBook.setImage(newBook.getImage().replaceFirst("[.][^.]+$", ""));
-        newBook.setImage(newBook.getImage());
         jsonBooks.setData(new ArrayList<>(Arrays.asList(newBook)));
         return new ResponseEntity<>(jsonBooks, HttpStatus.OK);
     }
@@ -83,59 +75,39 @@ public class BookController {
     @ResponseBody
     public ResponseEntity<?> removeBook(@RequestBody Book book) {
         bookService.removeBook(book);
+
         ImageFile imageFile = bookFileService.getImage(Integer.parseInt(book.getImage()));
-        if (imageFile != null) {
-            bookFileService.removeImage(imageFile.getId());
-            Path path = java.nio.file.Paths.get(com.example.demo.utils.ExtensionsAndPaths.SYSTEM_PATH.replaceFirst("/", ""));
-            deleteFileByPrefix(path, imageFile.getImageName());
-        }
+        bookFileService.removeImage(imageFile.getId());
+        Path path = java.nio.file.Paths.get(com.example.demo.utils.ExtensionsAndPaths.SYSTEM_PATH.replaceFirst("/", ""));
+        deleteFileByPrefix(path, imageFile.getImageName());
+
         imageFile = bookFileService.getImage(Integer.parseInt(book.getBook()));
-        if (!book.getBook().equals("")) {
-            bookFileService.removeImage(imageFile.getId());
-            Path path = java.nio.file.Paths.get(com.example.demo.utils.ExtensionsAndPaths.SYSTEM_PATH.replaceFirst("/", ""));
-            deleteFileByPrefix(path, imageFile.getImageName());
-        }
-        logger.warn("book id= " + book.getId() + " " + "has deleted successfully");
+        bookFileService.removeImage(imageFile.getId());
+        path = java.nio.file.Paths.get(com.example.demo.utils.ExtensionsAndPaths.SYSTEM_PATH.replaceFirst("/", ""));
+        deleteFileByPrefix(path, imageFile.getImageName());
+
         return new ResponseEntity<>(new JsonBook(), HttpStatus.OK);
     }
 
-    private JsonBook createImageJsonFromList() {
-        JsonBook data = new JsonBook();
+    private JsonBook createJsonBookFromList() {
+        JsonBook jsonBook = new JsonBook();
         List<Book> list = bookService.listBooks();
-        data.setData(list);
-        Files myFile1 = new Files();
+        jsonBook.setData(list);
 
         Map<String, JsonImageFile> imageFileMap = new HashMap<>();
         ImageFile newImage;
         for (Book book : list) {
-            if (!book.getImage().equals("")) {
-                newImage = bookFileService.getImage(Integer.parseInt((book.getImage())));
-
-                JsonImageFile jsonImageFile = new JsonImageFile();
-                jsonImageFile.setId(String.valueOf(newImage.getId()));
-                jsonImageFile.setSystemPath(newImage.getSystemPath());
-                jsonImageFile.setWebPath(newImage.getWebPath());
-                jsonImageFile.setImageName(newImage.getImageName());
-                jsonImageFile.setFileSize(newImage.getFileSize());
-
-                imageFileMap.put(jsonImageFile.getId(), jsonImageFile);
-            }
-            if (!book.getBook().equals("")) {
-                newImage = bookFileService.getImage(Integer.parseInt((book.getBook())));
-
-                JsonImageFile jsonImageFile2 = new JsonImageFile();
-                jsonImageFile2.setId(String.valueOf(newImage.getId()));
-                jsonImageFile2.setSystemPath(newImage.getSystemPath());
-                jsonImageFile2.setWebPath(newImage.getWebPath());
-                jsonImageFile2.setImageName(newImage.getImageName());
-                jsonImageFile2.setFileSize(newImage.getFileSize());
-
-                imageFileMap.put(jsonImageFile2.getId(), jsonImageFile2);
-            }
+            newImage = bookFileService.getImage(Integer.parseInt((book.getImage())));
+            JsonImageFile jsonImageFile = new JsonImageFile(newImage);
+            imageFileMap.put(jsonImageFile.getId(), jsonImageFile);
+            newImage = bookFileService.getImage(Integer.parseInt((book.getBook())));
+            JsonImageFile jsonImageFile2 = new JsonImageFile(newImage);
+            imageFileMap.put(jsonImageFile2.getId(), jsonImageFile2);
         }
-        myFile1.setFiles(imageFileMap);
-        data.setFiles(myFile1);
-        return data;
+        Files files = new Files();
+        files.setFiles(imageFileMap);
+        jsonBook.setFiles(files);
+        return jsonBook;
     }
 
     private void deleteFileByPrefix(final Path path, final String prefix) {
@@ -144,11 +116,11 @@ public class BookController {
                 try {
                     java.nio.file.Files.deleteIfExists(p);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.warn("file: " + prefix + " is not exist");
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("no path: " + path.toString());
         }
     }
 }

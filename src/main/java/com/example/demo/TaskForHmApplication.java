@@ -34,7 +34,7 @@ public class TaskForHmApplication {
             @Override
             public void run(String... strings) throws Exception {
         /*add image extensions*/
-                ExtensionsAndPaths.setExtensionsImageSet(new HashSet<>(Arrays.asList("png", "jpg", "bmp")));
+                ExtensionsAndPaths.setExtensionsImageSet(new HashSet<>(Arrays.asList("png", "jpg", "bmp","jpeg")));
         /*add book extensions*/
                 ExtensionsAndPaths.setExtensionsBookSet(new HashSet<>(Arrays.asList("txt", "rtf", "doc", "odt", "pdf")));
                 Role role = roleRepository.findByRole("ADMIN");

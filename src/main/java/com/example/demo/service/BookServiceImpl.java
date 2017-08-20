@@ -38,24 +38,6 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void updateBook(Book book) {
-        Book newBook = bookRepository.findOne(book.getId());
-        newBook.setTitle(book.getTitle());
-        newBook.setAuthor(book.getAuthor());
-        newBook.setDescription(book.getDescription());
-        newBook.setImage(book.getImage());
-        newBook.setBook(book.getBook());
-        newBook.setComments(book.getComments());
-        newBook.setPublishOffice(book.getPublishOffice());
-        bookRepository.save(newBook);
-    }
-
-    @Override
-    public void saveComments(Comment comment) {
-        commentRepository.save(comment);
-    }
-
-    @Override
     public List<Book> listBooks() {
         return bookRepository.findAll();
     }

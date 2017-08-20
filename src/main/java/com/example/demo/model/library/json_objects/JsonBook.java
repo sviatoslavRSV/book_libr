@@ -17,7 +17,6 @@ public class JsonBook {
 
     public JsonBook() {
         this.data = new ArrayList<>();
-//        this.uploads = new Upload(String.valueOf(5));
         this.files = new Files();
     }
 

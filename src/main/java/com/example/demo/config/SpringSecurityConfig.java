@@ -28,7 +28,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.headers()
                 .frameOptions().disable()
-//                .contentTypeOptions().disable()
                 .xssProtection().disable();
         http.csrf().disable()
                 .authorizeRequests()
@@ -36,13 +35,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/confirm", "/resendRegistrationToken", "/forgotPassword").permitAll()
                 .antMatchers("/resetPassword").permitAll()
                 .antMatchers("/admin/**").hasAuthority("ADMIN")
-//                .antMatchers("/admin/books/upload").hea
-//                .antMatchers("/user/**").hasAuthority("USER")
+                .antMatchers("/user/deleteAcount").hasAuthority("USER")
                 .anyRequest().authenticated()
                 .and().formLogin().successHandler(successHandler)
                 .loginPage("/login")
                 .failureUrl("/login?error=true")
-//                .defaultSuccessUrl("/")
                 .usernameParameter("email")
                 .passwordParameter("password")
                 .and()

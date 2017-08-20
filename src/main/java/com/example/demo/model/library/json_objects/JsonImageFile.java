@@ -1,5 +1,6 @@
 package com.example.demo.model.library.json_objects;
 
+import com.example.demo.model.library.ImageFile;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class JsonImageFile {
@@ -12,6 +13,18 @@ public class JsonImageFile {
     private String systemPath;
     @JsonProperty("filename")
     private String imageName;
+
+    public JsonImageFile() {
+
+    }
+
+    public JsonImageFile(ImageFile imageFile) {
+        this.id = String.valueOf(imageFile.getId());
+        this.systemPath = imageFile.getSystemPath();
+        this.webPath = imageFile.getWebPath();
+        this.imageName = imageFile.getImageName();
+        this.fileSize = imageFile.getFileSize();
+    }
 
     public String getId() {
         return id;

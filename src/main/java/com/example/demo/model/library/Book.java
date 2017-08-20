@@ -32,13 +32,6 @@ public class Book {
 
     }
 
-    /*public Book(String title, String author, String publishOffice, String description) {
-        this.title = title;
-        this.author = author;
-        this.publishOffice = publishOffice;
-        this.description = description;
-    }*/
-
     public List<Comment> getComments() {
         return comments;
     }

@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = PasswValidator.class)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidPassw {
-    String message() default "Invalid password-default from interface";
+    String message() default "Invalid password";
 
     Class<?>[] groups() default {};
 

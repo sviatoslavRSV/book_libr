@@ -9,6 +9,4 @@ public interface StorageService {
     void store(MultipartFile file, ImageFile imageFile);
 
     Resource loadFileAsResource(String filename);
-
-//    MultipartFile getMultipartFile();
 }

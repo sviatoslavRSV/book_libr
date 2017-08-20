@@ -54,12 +54,6 @@ public class LoginController {
         return "successRegister";
     }
 
-    @GetMapping(value = "/registration")
-    public String showPageRegistration(Model model, Userr userr) {
-        model.addAttribute("user", userr);
-        return "registration";
-    }
-
     @GetMapping(value = "/forgotPassword")
     public String showPageForgotPassword(Model model, Userr userr) {
         return "forgotPassword";
@@ -82,7 +76,7 @@ public class LoginController {
                 request.getContextPath();
         String text = ("To confirm change password click link below: \n" + url +
                 "/resetPassword?token=" + resetToken);
-        emailSender.sendEmail("change password email", text,userEmail,request.getLocale());
+        emailSender.sendEmail("change password email", text, userEmail, request.getLocale());
         return "redirect:/successRegister";
     }
 
@@ -116,8 +110,8 @@ public class LoginController {
         return "updatePassword";
     }
 
-    @PostMapping(value = "/saveResetPassword")
-    public String changePassword(@Valid PasswordDTO passwordDTO, BindingResult result, HttpServletRequest request) {
+    @PostMapping(value = "/updatePassword")
+    public String changePassword(@ModelAttribute("passwordDTO") @Valid PasswordDTO passwordDTO, BindingResult result) {
         logger.warn("in method saveResetPassword POST");
         if (result.hasErrors()) {
             return "updatePassword";
@@ -127,38 +121,38 @@ public class LoginController {
         return "redirect:/login";
     }
 
+    @GetMapping(value = "/registration")
+    public String showPageRegistration(Model model, Userr userr) {
+        model.addAttribute("user", userr);
+        return "registration";
+    }
+
     @PostMapping(value = "/registration")
-    public String createUserAcountAndSendConfirmEmail(@ModelAttribute @Valid Userr user, BindingResult result,
+    public String createUserAcountAndSendConfirmEmail(@ModelAttribute("user") @Valid Userr user, BindingResult result,
                                                       HttpServletRequest request) {
-        if (result.hasErrors()) { return "redirect:/registration";}
-       /* Zxcvbn zxcvbn = new Zxcvbn();
+        if (result.hasErrors()) return "registration";
+        /* Zxcvbn zxcvbn = new Zxcvbn();
         Strength strength = zxcvbn.measure(user.getPassword());
         if (strength.getScore() < 1) {
             String message = messageSource.getMessage("message.strengthPassw", null, request.getLocale());
             result.rejectValue("password", "err", message);
 //            result.rejectValue("password", "err", "password too weak from controller");
-            return "registration";
+            return "redirect:/registration";
         }*/
         Userr existUser = userService.findUserByEmail(user.getEmail());
         if (existUser != null) {
             String message = messageSource.getMessage("message.userExist", null, request.getLocale());
             result.rejectValue("email", "err", message);
-            return "redirect:/registration";
+            return "registration";
         }
         String token = UUID.randomUUID().toString();
         String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +
                 request.getContextPath();
         String text = ("To confirm registration click link below: \n" + url + "/confirm?token=" + token);
-        emailSender.sendEmail("confirmation mail", text,user.getEmail(),request.getLocale());
+        emailSender.sendEmail("confirmation mail", text, user.getEmail(), request.getLocale());
         userService.createUserAcount(user);
         userService.createToken(user, token);
         return "redirect:/successRegister";
-    }
-
-    @GetMapping(value = "/user/changePassword")
-    public String showChangePasswordPage(Model model) {
-        model.addAttribute("passwordDTO", new PasswordDTO());
-        return "changePassword";
     }
 
     @GetMapping(value = "/confirm")
@@ -183,7 +177,7 @@ public class LoginController {
         userService.saveRegisteredUser(user);
         String message = messageSource.getMessage("message.allowEnter", null, request.getLocale());
         model.addAttribute("enter", message);
-        return "redirect:/successRegister";
+        return "login";
     }
 
     @GetMapping(value = "/resendRegistrationToken")
@@ -193,13 +187,19 @@ public class LoginController {
         String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +
                 request.getContextPath();
         String text = ("To confirm REregistration click link below: \n" + url + "/confirm?token=" + newToken.getToken());
-        emailSender.sendEmail("confirmation mail", text,userr.getEmail(),request.getLocale());
+        emailSender.sendEmail("confirmation mail", text, userr.getEmail(), request.getLocale());
         return "redirect:/successRegister";
     }
 
-    @PostMapping(value = "/user/saveChangedPassword")
+    @GetMapping(value = "/user/changePassword")
+    public String showChangePasswordPage(Model model) {
+        model.addAttribute("passwordDTO", new PasswordDTO());
+        return "changePassword";
+    }
+
+    @PostMapping(value = "/user/changePassword")
     public String saveChangedPassword(@RequestParam String oldPassword, @Valid PasswordDTO passwordDTO,
-                                      BindingResult result, HttpServletRequest request) {
+                                      BindingResult result) {
         logger.warn("in method saveChangedPassword POST");
         if (result.hasErrors()) {
             return "changePassword";
@@ -219,7 +219,7 @@ public class LoginController {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Userr user = userService.findUserByEmail(email);
         userService.deleteAcount(user);
-        SecurityContextHolder.getContext().getAuthentication().getAuthorities().clear();
+//        SecurityContextHolder.getContext().getAuthentication().getAuthorities().clear();
         logger.warn("delete complete successfully");
         return "redirect:/login";
     }
