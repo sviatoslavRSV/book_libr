@@ -18,17 +18,7 @@ build/
 
 # IntelliJ IDEA Files #
 
-*.iml
 *.ipr
 *.iws
 
-# Test files
 
-*-uploaded
-dependency-reduced-pom.xml
-README.html
-
-upload-dir
-
-
-src/main/resources/upload/
