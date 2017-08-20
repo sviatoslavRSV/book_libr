@@ -50,21 +50,10 @@ public class BookController {
     @ResponseBody
     public ResponseEntity<?> addBook(@RequestBody Book newBook, HttpServletRequest request) {
         logger.warn(newBook);
-        if (newBook.getImage() == "") {
-            String message = messageSource.getMessage("image.content.err", null, request.getLocale());
-            return new ResponseEntity<Object>(new JsonMessage("image", message)
-                    , HttpStatus.OK);
-        }
-        if (newBook.getTitle() == "") {
-            String message = messageSource.getMessage("title.content.err", null, request.getLocale());
-            return new ResponseEntity<Object>(new JsonMessage("title", message)
-                    , HttpStatus.OK);
-        }
-        if (newBook.getBook() == "") {
-            String message = messageSource.getMessage("book.content.err", null, request.getLocale());
-            return new ResponseEntity<Object>(new JsonMessage("book", message)
-                    , HttpStatus.OK);
-        }
+        JsonMessage jsonMessage = checkNewBook(newBook, request);
+        if (jsonMessage.getFieldErrors().get(0).getName() != null)
+            return new ResponseEntity<>(jsonMessage, HttpStatus.OK);
+
         bookService.addBook(newBook);
         JsonBook jsonBooks = new JsonBook();
         jsonBooks.setData(new ArrayList<>(Arrays.asList(newBook)));
@@ -87,6 +76,38 @@ public class BookController {
         deleteFileByPrefix(path, imageFile.getImageName());
 
         return new ResponseEntity<>(new JsonBook(), HttpStatus.OK);
+    }
+
+    private JsonMessage checkNewBook(Book newBook, HttpServletRequest request) {
+        if (newBook.getImage() == "") {
+            String message = messageSource.getMessage("image.content.err", null, request.getLocale());
+            return new JsonMessage("image", message);
+        }
+        if (newBook.getTitle() == "") {
+            String message = messageSource.getMessage("title.content.err", null, request.getLocale());
+            return new JsonMessage("title", message);
+        }
+        if (newBook.getBook() == "") {
+            String message = messageSource.getMessage("book.content.err", null, request.getLocale());
+            return new JsonMessage("book", message);
+        }
+        if (newBook.getTitle().length() > 255) {
+            String message = messageSource.getMessage("title.content.err", null, request.getLocale());
+            return new JsonMessage("title", message);
+        }
+        if (newBook.getAuthor().length() > 255) {
+            String message = messageSource.getMessage("author.content.err", null, request.getLocale());
+            return new JsonMessage("author", message);
+        }
+        if (newBook.getPublishOffice().length() > 255) {
+            String message = messageSource.getMessage("publOffice.content.err", null, request.getLocale());
+            return new JsonMessage("publishOffice", message);
+        }
+        if (newBook.getDescription().length() > 800) {
+            String message = messageSource.getMessage("descript.content.err", null, request.getLocale());
+            return new JsonMessage("description", message);
+        }
+        return new JsonMessage();
     }
 
     private JsonBook createJsonBookFromList() {

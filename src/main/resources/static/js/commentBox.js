@@ -1,7 +1,6 @@
 $(document).ready(function () {
     $(".editor-header a").click(function (e) {
         e.preventDefault();
-
         var _val = $(this).data("role"),
             _sizeValIn = parseInt($(this).data("size-val") + 1),
             _sizeValRe = parseInt($(this).data("size-val") - 1),
@@ -32,19 +31,15 @@ $(document).ready(function () {
             _data = $text.html();
             $.ajax({
                 type: "POST",
+                contentType: 'application/json',
                 url: window.local,
                 data: _data,
                 cache: false,
-                // contentType: 'application/json; charset=utf-8',
-                // dataType: 'json',
                 success: function (html) {
                     $loading.show().fadeOut(300);
                     $listComment.append("<div>" + _data + "</div>");
-                    console.log(_data);
                     $text.html("");
                     $totalCom.text($(".list-comments > div").length);
-                    // console.log($totalCom);
-                    // console.log($listComment);
                 }
             });
             return false;

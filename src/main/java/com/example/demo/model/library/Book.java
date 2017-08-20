@@ -1,6 +1,7 @@
 package com.example.demo.model.library;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.List;
@@ -18,6 +19,7 @@ public class Book {
     private String author;
     @Column(name = "publish_office")
     private String publishOffice;
+    @Type(type = "text")
     @Column(name = "short_descript")
     private String description;
     @Column(name = "image")

@@ -44,7 +44,6 @@ $(document).ready(function () {
             {
                 data: "title",
                 render: function (data, type, row, meta) {
-                    // console.log(row);
                     return '<a href="/user/book/' + row.id + '">' + data + '</a>';
                 }
             },

@@ -18,7 +18,7 @@
         <link rel="stylesheet" href="/css/style.css">
 
         <script src="/js/commentBox.js"></script>
-        <script src="/js/bookDetail.js"></script>
+
     </head>
     <body>
         <hr>
@@ -30,19 +30,24 @@
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <h2 class="text-uppercase">Book detail description </h2><br>
                     <p>
-                    <table>
+                    <table class="book-table">
                         <tr>
-                            <td><b>Book Title:</b></td>
-                            <td><a th:text="${book.title}"></a><br></td>
+                            <td style="width:30%"><b>Book Title:</b></td>
+                            <td style="width:70%">
+                                <div th:text="${book.title}"></div>
+                            </td>
                         </tr>
                         <tr>
                             <td><b>Author:</b></td>
-                            <td><a th:text="${book.author}"></a></td>
+                            <td>
+                                <div th:text="${book.author}"></div>
+                            </td>
                         </tr>
                         <tr>
                             <td><b>Publishing office:</b></td>
-                            <td></td>
-                            <a th:text="${book.publishOffice}"></a></tr>
+                            <td>
+                                <div th:text="${book.publishOffice}"></div>
+                            </td>
                         </tr>
                         <tr>
                             <td><b>Download link:</b></td>
@@ -50,45 +55,46 @@
                         </tr>
                         <tr>
                             <td><b>Short description:</b></td>
-                            <td><a th:text="${book.description}"></a></td>
+                            <td>
+                                <div th:text="${book.description}"></div>
+                            </td>
                         </tr>
                     </table>
                     </p>
                 </div>
             </div>
-        </div>
-
-        <hr>
-
-        <div class="content">
-            <div class="comments">
-                <div class="editor">
-                    <div class="editor-header">
-                        <a href='#' data-role='bold'>B</a>
-                        <a href='#' data-role='italic'>I</a>
-                        <a href='#' data-role='underline'>U</a>
-                        <a href='#' data-role='justifyleft'><i class="menu-left"></i></a>
-                        <a href='#' data-role='justifycenter'><i class="menu-center"></i></a>
-                        <a href='#' data-role='justifyright'><i class="menu-right"></i></a>
+            <hr>
+            <div class="content">
+                <div class="comments">
+                    <div class="editor">
+                        <div class="editor-header">
+                            <a href='#' data-role='bold'>B</a>
+                            <a href='#' data-role='italic'>I</a>
+                            <a href='#' data-role='underline'>U</a>
+                            <a href='#' data-role='justifyleft'><i class="menu-left"></i></a>
+                            <a href='#' data-role='justifycenter'><i class="menu-center"></i></a>
+                            <a href='#' data-role='justifyright'><i class="menu-right"></i></a>
+                        </div>
+                        <div id="text" class="editor-content" contenteditable></div>
                     </div>
-                    <div id="text" class="editor-content" contenteditable></div>
-                </div>
-                <div class="insert-text">
-                    <span class="loading">Loading...</span>
-                    <span class="total-comment"></span>
-                    <p>
-                        <input type="submit" value="Comment"/>
-                    </p>
-                </div>
-                <div>
-                    <div class="list-comments">
-                        <div th:each="comment : ${book.comments}">
-                            <a th:text="${comment.comment}"></a>
+                    <div class="insert-text">
+                        <span class="loading">Loading...</span>
+                        <span class="total-comment"></span>
+                        <p>
+                            <input type="submit" value="Comment"/>
+                        </p>
+                    </div>
+                    <div>
+                        <div class="list-comments">
+                            <div th:each="comment : ${book.comments}">
+                                <a th:text="${comment.comment}"></a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
 
     </body>
 </html>

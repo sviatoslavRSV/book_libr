@@ -12,10 +12,6 @@ $(document).ready(function () {
                 contentType: 'application/json',
                 dataType: 'json',
                 data: function (d) {
-                    // var imageId = d.data[0].image;
-                    // var imageObj = editor.file('files', imageId);
-                    // d.data[0].image = imageObj.filename;
-                    console.log(d.data[0]);
                     return JSON.stringify(d.data[0]);
                 },
                 url: '/admin/books/add'
@@ -27,13 +23,11 @@ $(document).ready(function () {
                 data: function (d) {
                     var returnedObject;
                     for (var prop in d.data) {
-                        console.log(prop, d.data[prop]);
                         returnedObject = d.data[prop];
                         returnedObject.id = prop;
                     }
                     return JSON.stringify(returnedObject);
                 },
-                // url: '/user/books/update'
                 url: '/admin/books/add'
             },
             remove: {
@@ -43,7 +37,6 @@ $(document).ready(function () {
                 data: function (d) {
                     var returnedObject;
                     for (var prop in d.data) {
-                        console.log(prop, d.data[prop]);
                         returnedObject = d.data[prop];
                         returnedObject.id = prop;
                     }
@@ -93,7 +86,6 @@ $(document).ready(function () {
 
     $('#messageTable').DataTable({
         dom: "Bfrtip",
-        // ajax: "/fake-data/data.json",
         ajax: "/user/books",
         columns: [
             {data: "id"},
@@ -108,7 +100,6 @@ $(document).ready(function () {
             {
                 data: "title",
                 render: function (data, type, row, meta) {
-                    // console.log(row);
                     return '<a href="/user/book/' + row.id + '">' + data + '</a>';
                 }
             },
