@@ -25,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +45,7 @@ public class FileUploadController {
     @ResponseBody
     public ResponseEntity<?> handleImageUpload(@RequestParam("upload") MultipartFile file
             , HttpServletRequest request) {
-        logger.warn("file: " + file.getOriginalFilename() + " : " + file.getContentType());
+        logger.debug("uplaod imagefile: " + file.getOriginalFilename() + " : " + file.getContentType());
         return checkImage(file, request);
     }
 
@@ -54,7 +53,7 @@ public class FileUploadController {
     @ResponseBody
     public ResponseEntity<?> handleFileUpload(@RequestParam("upload") MultipartFile file
             , HttpServletRequest request) {
-        logger.warn("file: " + file.getOriginalFilename() + " : " + file.getContentType());
+        logger.debug("upload bookfile: " + file.getOriginalFilename() + " : " + file.getContentType());
         return checkBookFile(file, request);
     }
 
@@ -63,6 +62,7 @@ public class FileUploadController {
     @ResponseBody
     public ResponseEntity<?> getImageFile(@PathVariable String filename) {
         Resource fileImage = storageService.loadFileAsResource(filename);
+        logger.debug("file: " + filename + " downloaded with success");
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" +
                 fileImage.getFilename()).body(fileImage);
     }
@@ -72,7 +72,7 @@ public class FileUploadController {
         BufferedImage bufferedImage = null;
         try {
             bufferedImage = ImageIO.read(file.getInputStream());
-            logger.warn("height: " + bufferedImage.getHeight() + " weight: " + bufferedImage.getWidth());
+            logger.debug("height: " + bufferedImage.getHeight() + " weight: " + bufferedImage.getWidth());
         } catch (MalformedURLException e) {
             logger.warn(e.getMessage());
         } catch (Exception e) {
@@ -81,11 +81,13 @@ public class FileUploadController {
 
         if (!ExtensionsAndPaths.getExtensionsImageSet().contains(extension)) {
             String message = messageSource.getMessage("image.extens.err", null, request.getLocale());
+            logger.debug("unregistered extension");
             return new ResponseEntity<Object>(new JsonMessage("image", message)
                     , HttpStatus.OK);
         }
         if (bufferedImage.getHeight() > 800 || bufferedImage.getWidth() > 600) {
             String message = messageSource.getMessage("image.size.err", null, request.getLocale());
+            logger.debug("wrong resolution");
             return new ResponseEntity<Object>(new JsonMessage("image", message)
                     , HttpStatus.OK);
         }
@@ -97,11 +99,13 @@ public class FileUploadController {
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
         if (!ExtensionsAndPaths.getExtensionsBookSet().contains(extension)) {
             String message = messageSource.getMessage("book.extens.err", null, request.getLocale());
+            logger.debug("unregistered extension");
             return new ResponseEntity<Object>(new JsonMessage("book", message)
                     , HttpStatus.OK);
         }
         if (file.getSize() > 20000000) {
             String message = messageSource.getMessage("book.size.err", null, request.getLocale());
+            logger.debug("wrong size");
             return new ResponseEntity<Object>(new JsonMessage("book", message)
                     , HttpStatus.OK);
         }
@@ -118,9 +122,10 @@ public class FileUploadController {
         newImage.setWebPath(ExtensionsAndPaths.WEB_PATH + newImage.getImageName());
 /*write object in database and retreive id*/
         newImage = bookFileService.saveImage(newImage);
+        logger.debug("image saved with success: " + newImage.getImageName());
 /*create new json with field "String id" instead of "int id"*/
         JsonImageFile jsonImageFile = new JsonImageFile(newImage);
-/*creat json object with write structure for response*/
+/*creat json object with structure for response*/
         JsonBook jsonBook = new JsonBook();
         Files files = new Files();
         Map<String, JsonImageFile> imageFileMap = new HashMap<>();
@@ -130,7 +135,7 @@ public class FileUploadController {
         Upload upload = new Upload();
         upload.setId(String.valueOf(newImage.getId()));
         jsonBook.setUploads(upload);
-/*save file in system*/
+/*save file in system path*/
         storageService.store(multipartFile, newImage);
         logger.warn("image saved successfully name= " + newImage.getImageName() + " id= " + newImage.getId());
         return jsonBook;

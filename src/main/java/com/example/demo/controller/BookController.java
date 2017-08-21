@@ -40,21 +40,19 @@ public class BookController {
     @GetMapping(value = "/user/books")
     @ResponseBody
     public ResponseEntity<?> getAllBooks() {
-        logger.warn("in method getAllBooks");
         JsonBook data = createJsonBookFromList();
-        logger.warn("send all books as responseBody");
+        logger.info("send all books as responseBody");
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
     @PostMapping(value = "/admin/books/add")
     @ResponseBody
     public ResponseEntity<?> addBook(@RequestBody Book newBook, HttpServletRequest request) {
-        logger.warn(newBook);
         JsonMessage jsonMessage = checkNewBook(newBook, request);
         if (jsonMessage.getFieldErrors().get(0).getName() != null)
             return new ResponseEntity<>(jsonMessage, HttpStatus.OK);
-
         bookService.addBook(newBook);
+        logger.info("book: " + newBook.getTitle() + " saved successfully");
         JsonBook jsonBooks = new JsonBook();
         jsonBooks.setData(new ArrayList<>(Arrays.asList(newBook)));
         return new ResponseEntity<>(jsonBooks, HttpStatus.OK);
@@ -64,47 +62,54 @@ public class BookController {
     @ResponseBody
     public ResponseEntity<?> removeBook(@RequestBody Book book) {
         bookService.removeBook(book);
+        ImageFile imageFile = null;
+        try {
+            imageFile = bookFileService.getImage(Integer.parseInt(book.getImage()));
+            bookFileService.removeImage(imageFile.getId());
+            Path path = java.nio.file.Paths.get(com.example.demo.utils.ExtensionsAndPaths.SYSTEM_PATH.replaceFirst("/", ""));
+            deleteFileByPrefix(path, imageFile.getImageName());
+            logger.info(imageFile.getImageName() + " deleted");
 
-        ImageFile imageFile = bookFileService.getImage(Integer.parseInt(book.getImage()));
-        bookFileService.removeImage(imageFile.getId());
-        Path path = java.nio.file.Paths.get(com.example.demo.utils.ExtensionsAndPaths.SYSTEM_PATH.replaceFirst("/", ""));
-        deleteFileByPrefix(path, imageFile.getImageName());
-
-        imageFile = bookFileService.getImage(Integer.parseInt(book.getBook()));
-        bookFileService.removeImage(imageFile.getId());
-        path = java.nio.file.Paths.get(com.example.demo.utils.ExtensionsAndPaths.SYSTEM_PATH.replaceFirst("/", ""));
-        deleteFileByPrefix(path, imageFile.getImageName());
-
+            imageFile = bookFileService.getImage(Integer.parseInt(book.getBook()));
+            bookFileService.removeImage(imageFile.getId());
+            path = java.nio.file.Paths.get(com.example.demo.utils.ExtensionsAndPaths.SYSTEM_PATH.replaceFirst("/", ""));
+            deleteFileByPrefix(path, imageFile.getImageName());
+            logger.info(imageFile.getImageName() + " deleted");
+        } catch (NumberFormatException e) {
+            logger.warn(e.getMessage());
+        }
         return new ResponseEntity<>(new JsonBook(), HttpStatus.OK);
     }
 
     private JsonMessage checkNewBook(Book newBook, HttpServletRequest request) {
         if (newBook.getImage() == "") {
             String message = messageSource.getMessage("image.content.err", null, request.getLocale());
+            logger.debug("image is empty");
             return new JsonMessage("image", message);
         }
-        if (newBook.getTitle() == "") {
+        if (newBook.getTitle() == "" || newBook.getTitle().length() > 255) {
             String message = messageSource.getMessage("title.content.err", null, request.getLocale());
+            logger.debug("title is empty or more than 255");
             return new JsonMessage("title", message);
         }
         if (newBook.getBook() == "") {
             String message = messageSource.getMessage("book.content.err", null, request.getLocale());
+            logger.debug("book is empty");
             return new JsonMessage("book", message);
-        }
-        if (newBook.getTitle().length() > 255) {
-            String message = messageSource.getMessage("title.content.err", null, request.getLocale());
-            return new JsonMessage("title", message);
         }
         if (newBook.getAuthor().length() > 255) {
             String message = messageSource.getMessage("author.content.err", null, request.getLocale());
+            logger.debug("author more than 255");
             return new JsonMessage("author", message);
         }
         if (newBook.getPublishOffice().length() > 255) {
             String message = messageSource.getMessage("publOffice.content.err", null, request.getLocale());
+            logger.debug("publ office more than 255");
             return new JsonMessage("publishOffice", message);
         }
         if (newBook.getDescription().length() > 800) {
             String message = messageSource.getMessage("descript.content.err", null, request.getLocale());
+            logger.debug("description more than 255");
             return new JsonMessage("description", message);
         }
         return new JsonMessage();

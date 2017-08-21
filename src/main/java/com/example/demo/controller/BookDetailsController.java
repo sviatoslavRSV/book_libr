@@ -12,8 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-
 @Controller
 public class BookDetailsController {
     private Logger logger = Logger.getLogger(BookController.class);
@@ -33,17 +31,19 @@ public class BookDetailsController {
         ImageFile bookFile = bookFileService.getImage(Integer.parseInt(book.getBook()));
         modelAndView.addObject("image", image);
         modelAndView.addObject("bookFile", bookFile);
+        logger.info("show book details page id: " + book.getId());
         return modelAndView;
     }
 
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PostMapping(value = "/user/book/{id}")
     @ResponseBody
-    public String receiveComments(@PathVariable int id, @RequestBody String comm, HttpServletRequest request) {
+    public String receiveComments(@PathVariable int id, @RequestBody String comm) {
         Book book = bookService.getBookById(id);
-        Comment comment = new Comment(comm,book);
+        Comment comment = new Comment(comm, book);
         book.getComments().add(comment);
         bookService.addBook(book);
+        logger.info("comment: " + comm + " saved successfully");
         return "success";
     }
 }

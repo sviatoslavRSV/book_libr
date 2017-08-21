@@ -10,12 +10,12 @@ public class IndexController {
 
     @GetMapping(value = "/admin")
     public String listBooksA() {
-        logger.warn("show admin index page");
+        logger.debug("show admin index page");
         return "admin/index";
     }
     @GetMapping(value = "/user")
     public String listBooksU() {
-        logger.warn("show admin index page");
+        logger.debug("show admin index page");
         return "user/index";
     }
 

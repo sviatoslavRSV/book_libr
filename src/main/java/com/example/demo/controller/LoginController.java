@@ -62,14 +62,14 @@ public class LoginController {
     @PostMapping(value = "/forgotPassword")
     public String sendEmailForgotPassword(@ModelAttribute("email") String userEmail, HttpServletRequest request
             , Model model) {
-        logger.warn("in forgot password method " + userEmail);
+        logger.debug("in forgot password method: " + userEmail);
         Userr user = userService.findUserByEmail(userEmail);
         if (user == null) {
             model.addAttribute("noEmail", messageSource.getMessage("message.noUser",
                     null, request.getLocale()));
             logger.warn("user not exitst, in forgotPassword method");
             return "forgotPassword";
-        } else logger.warn("email exist");
+        } else logger.debug("email exist");
         String resetToken = UUID.randomUUID().toString();
         userService.createPasswResetToken(user, resetToken);
         String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +
@@ -84,7 +84,7 @@ public class LoginController {
     public String emailConfirmChangePassword(@RequestParam("token") String resetToken,
                                              HttpServletRequest request, Model model) {
         PasswResetToken token = userService.getPasswResetToken(resetToken);
-        logger.warn("in method email confirmation of reseting password");
+        logger.debug("in method email confirmation of reseting password");
         Locale locale = request.getLocale();
         if (token == null) {
             String message = messageSource.getMessage("token.invalid", null, locale);
@@ -105,14 +105,14 @@ public class LoginController {
 
     @GetMapping(value = "/updatePassword")
     public String showUpdatePasswordPage(Model model) {
-        logger.warn("in method update showUpdatePasswordPage GET");
+        logger.debug("in method update showUpdatePasswordPage GET");
         model.addAttribute("passwordDTO", new PasswordDTO());
         return "updatePassword";
     }
 
     @PostMapping(value = "/updatePassword")
     public String changePassword(@ModelAttribute("passwordDTO") @Valid PasswordDTO passwordDTO, BindingResult result) {
-        logger.warn("in method saveResetPassword POST");
+        logger.debug("in method saveResetPassword POST");
         if (result.hasErrors()) {
             return "updatePassword";
         }
@@ -200,7 +200,7 @@ public class LoginController {
     @PostMapping(value = "/user/changePassword")
     public String saveChangedPassword(@RequestParam String oldPassword, @Valid PasswordDTO passwordDTO,
                                       BindingResult result) {
-        logger.warn("in method saveChangedPassword POST");
+        logger.debug("in method saveChangedPassword POST");
         if (result.hasErrors()) {
             return "changePassword";
         }
@@ -210,7 +210,7 @@ public class LoginController {
             return "changePassword";
         }
         userService.changeUserPassword(user, passwordDTO);
-        logger.warn("password has changed");
+        logger.debug("password has changed: " + passwordDTO.getPassword());
         return "redirect:/login";
     }
 
@@ -220,7 +220,7 @@ public class LoginController {
         Userr user = userService.findUserByEmail(email);
         userService.deleteAcount(user);
 //        SecurityContextHolder.getContext().getAuthentication().getAuthorities().clear();
-        logger.warn("delete complete successfully");
+        logger.debug("delete complete successfully");
         return "redirect:/login";
     }
 }
