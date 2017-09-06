@@ -7,8 +7,7 @@ import com.example.demo.model.login.token.PasswResetToken;
 import com.example.demo.model.login.token.VerifToken;
 import com.example.demo.service.EmailSender;
 import com.example.demo.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,7 +30,7 @@ import java.util.UUID;
 
 @Controller
 public class LoginController {
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private Logger logger = Logger.getLogger(LoginController.class);
 
     @Autowired
     private EmailSender emailSender;

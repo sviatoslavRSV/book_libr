@@ -74,9 +74,9 @@ public class FileUploadController {
             bufferedImage = ImageIO.read(file.getInputStream());
             logger.debug("height: " + bufferedImage.getHeight() + " weight: " + bufferedImage.getWidth());
         } catch (MalformedURLException e) {
-            logger.warn(e.getMessage());
+            logger.warn(e.getMessage() + "exception");
         } catch (Exception e) {
-            logger.warn(e.getMessage());
+            logger.warn(e.getMessage() + "exception");
         }
 
         if (!ExtensionsAndPaths.getExtensionsImageSet().contains(extension)) {
@@ -137,7 +137,7 @@ public class FileUploadController {
         jsonBook.setUploads(upload);
 /*save file in system path*/
         storageService.store(multipartFile, newImage);
-        logger.warn("image saved successfully name= " + newImage.getImageName() + " id= " + newImage.getId());
+        logger.debug("image saved successfully name= " + newImage.getImageName() + " id= " + newImage.getId());
         return jsonBook;
     }
 }

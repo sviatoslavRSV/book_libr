@@ -87,6 +87,7 @@ $(document).ready(function () {
     $('#messageTable').DataTable({
         dom: "Bfrtip",
         ajax: "/user/books",
+        // deferRender: true,
         columns: [
             {data: "id"},
             {

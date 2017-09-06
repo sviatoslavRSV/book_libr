@@ -14,7 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class BookDetailsController {
-    private Logger logger = Logger.getLogger(BookController.class);
+    private Logger logger = Logger.getLogger(BookDetailsController.class);
 
     @Autowired
     private BookFileService bookFileService;

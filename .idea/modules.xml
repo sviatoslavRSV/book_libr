@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/task_for_hm.iml" filepath="$PROJECT_DIR$/.idea/task_for_hm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/book_libr.iml" filepath="$PROJECT_DIR$/.idea/book_libr.iml" />
     </modules>
   </component>
 </project>

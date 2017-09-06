@@ -46,9 +46,9 @@ DataTable.Editor.defaults.display = "bootstrap";
  * Alter the buttons that Editor adds to TableTools so they are suitable for bootstrap
  */
 var i18nDefaults = DataTable.Editor.defaults.i18n;
-i18nDefaults.create.title = '<h4 class="modal-title">'+i18nDefaults.create.title+'</h4>';
-i18nDefaults.edit.title = '<h4 class="modal-title">'+i18nDefaults.edit.title+'</h4>';
-i18nDefaults.remove.title = '<h4 class="modal-title">'+i18nDefaults.remove.title+'</h4>';
+i18nDefaults.create.title = '<h5 class="modal-title">'+i18nDefaults.create.title+'</h5>';
+i18nDefaults.edit.title = '<h5 class="modal-title">'+i18nDefaults.edit.title+'</h5>';
+i18nDefaults.remove.title = '<h5 class="modal-title">'+i18nDefaults.remove.title+'</h5>';
 
 var tt = DataTable.TableTools;
 if ( tt ) {
@@ -76,17 +76,17 @@ $.extend( true, $.fn.dataTable.Editor.classes, {
 		"button": "btn btn-default"
 	},
 	"field": {
-		"wrapper": "DTE_Field form-group",
-		"label":   "col-lg-4 control-label",
-		"input":   "col-lg-8 controls",
+		"wrapper": "DTE_Field form-group row",
+		"label":   "col-lg-4 col-form-label",
+		"input":   "col-lg-8",
 		"error":   "error has-error",
-		"msg-labelInfo": "help-block",
-		"msg-info":      "help-block",
-		"msg-message":   "help-block",
-		"msg-error":     "help-block",
-		"multiValue":    "well well-sm multi-value",
+		"msg-labelInfo": "form-text text-secondary",
+		"msg-info":      "form-text text-secondary",
+		"msg-message":   "form-text text-secondary",
+		"msg-error":     "form-text text-danger",
+		"multiValue":    "card multi-value",
 		"multiInfo":     "small",
-		"multiRestore":  "well well-sm multi-restore"
+		"multiRestore":  "card multi-restore"
 	}
 } );
 
@@ -171,7 +171,7 @@ DataTable.Editor.display.bootstrap = $.extend( true, {}, DataTable.Editor.models
 		content.children().detach();
 		content.append( append );
 
-		$('div.modal-header', append).prepend( self._dom.close );
+		$('div.modal-header', append).append( self._dom.close );
 
 		$(self._dom.content)
 			.one('shown.bs.modal', function () {

@@ -3,7 +3,7 @@
 
     <head>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
-        <title>Spring Security Tutorial</title>
+        <title>Login</title>
     </head>
 
     <body>
@@ -59,7 +59,7 @@
 
                                                 <div class="col-xs-12 col-sm-12 col-md-12">
                                                     <label th:if="${param.error}"
-                                                         th:text="#{message.paramError}"></label>
+                                                           th:text="#{message.paramError}"></label>
                                                     <label th:if="${invalidToken}" th:text="${invalidToken}"></label>
                                                     <label th:if="${enter}" th:text="${enter}"></label>
                                                 </div>
@@ -88,6 +88,7 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
                         </form>
                     </div>
                 </div>

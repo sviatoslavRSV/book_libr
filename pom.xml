@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.example</groupId>
-	<artifactId>task_for_hm</artifactId>
+	<artifactId>book_libr</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>task_for_hm</name>
-	<description>Demo project for Spring Boot</description>
+	<name>book_libr</name>
+	<description>electronic book library</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

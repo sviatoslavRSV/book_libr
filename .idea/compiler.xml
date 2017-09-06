@@ -6,10 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="book_libr" />
         <module name="task_for_hm" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="book_libr" target="1.8" />
       <module name="task_for_hm" target="1.8" />
     </bytecodeTargetLevel>
   </component>
